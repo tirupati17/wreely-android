@@ -3,6 +3,7 @@ package com.celerstudio.wreelysocial.views.activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.models.Company;
 import com.celerstudio.wreelysocial.models.Member;
+import com.celerstudio.wreelysocial.models.User;
 import com.celerstudio.wreelysocial.util.Util;
 
 import butterknife.BindView;
@@ -44,6 +46,8 @@ public class MemberDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_member_detail);
         ButterKnife.bind(this);
 
+        User user = getApp().getUser();
+
         if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -67,6 +71,10 @@ public class MemberDetailActivity extends BaseActivity {
         occupation.setText(Util.textIsEmpty(member.getOccupation()) ? "Not Available" : member.getOccupation());
         email.setText(Util.textIsEmpty(member.getEmailId()) ? "Not Available" : member.getEmailId());
         phone.setText(Util.textIsEmpty(member.getContactNo()) ? "Not Available" : member.getContactNo());
+        if (!user.getEmail().equalsIgnoreCase(member.getEmailId())) {
+            email.setText(Util.textIsEmpty(member.getEmailId()) ? "Not Available" : getEncryptedString(member.getEmailId()));
+            phone.setText(Util.textIsEmpty(member.getContactNo()) ? "Not Available" : getEncryptedString(member.getContactNo()));
+        }
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
 // generate random color
@@ -83,6 +91,19 @@ public class MemberDetailActivity extends BaseActivity {
                     .buildRound("N", color1);
         }
         logo.setImageDrawable(drawable);
+    }
+
+    private String getEncryptedString(String str) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            String j = String.valueOf(str.charAt(i));
+            if (i > 1 && i < str.length() - 1) {
+                sb.append("x");
+            } else {
+                sb.append(j);
+            }
+        }
+        return sb.toString();
     }
 
 

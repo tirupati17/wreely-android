@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.celerstudio.wreelysocial.BuildConfig;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -67,9 +68,11 @@ public class LoginActivity extends BaseActivity {
         this.mAuth = FirebaseAuth.getInstance();
         myRef = getApp().getFirebaseDBRef("users");
         compositeSubscription = new CompositeSubscription();
+        if (!BuildConfig.BUILD_TYPE.equalsIgnoreCase("release")) {
+            etEmail.setText("tirupati.balan@gmail.com");
+            etPassword.setText("123456789");
+        }
 
-        etEmail.setText("tirupati.balan@gmail.com");
-        etPassword.setText("123456789");
 
         setSupportActionBar(toolbar);
     }

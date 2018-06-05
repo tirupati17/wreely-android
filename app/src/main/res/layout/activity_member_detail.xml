@@ -85,7 +85,8 @@
                     android:layout_height="wrap_content"
                     android:editable="false"
                     android:focusable="false"
-                    android:hint="Occupation" />
+                    android:hint="Occupation"
+                    android:textColor="@color/grey7" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -103,7 +104,8 @@
                     android:drawableTint="@color/colorPrimary"
                     android:editable="false"
                     android:focusable="false"
-                    android:hint="Email" />
+                    android:hint="Email"
+                    android:textColor="@color/grey7" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -121,7 +123,8 @@
                     android:drawableTint="@color/colorPrimary"
                     android:editable="false"
                     android:focusable="false"
-                    android:hint="Phone" />
+                    android:hint="Phone"
+                    android:textColor="@color/grey7" />
 
             </android.support.design.widget.TextInputLayout>
 
