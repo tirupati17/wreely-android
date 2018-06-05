@@ -1,0 +1,19 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="@color/chat_tab_item"
+        android:background="@drawable/btn_primary_square"
+        android:singleLine="true"
+        android:gravity="center"
+        android:textSize="16sp" />
+
+
+</LinearLayout>

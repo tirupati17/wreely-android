@@ -1,0 +1,14 @@
+*.iml
+.gradle
+/local.properties
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+.DS_Store
+/build
+/.idea
+/captures
+.externalNativeBuild
+*.jks
+# Google Services (e.g. APIs or Firebase)
+google-services.json
