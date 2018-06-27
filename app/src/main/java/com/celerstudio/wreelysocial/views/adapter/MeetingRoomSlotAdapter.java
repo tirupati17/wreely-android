@@ -82,16 +82,24 @@ public class MeetingRoomSlotAdapter extends RecyclerView.Adapter<MeetingRoomSlot
         String startTime = Util.getFriendlyTime(item.getStartTime().split("\\s")[1]);
         String endTime = Util.getFriendlyTime(item.getEndTime().split("\\s")[1]);
         holder.name.setText(startTime + " - " + endTime);
-        if (item.isAvailable()) {
-            holder.check.setChecked(false);
-            holder.check.setEnabled(true);
+
+        if (item.isExpired()) {
+            holder.check.setEnabled(false);
+            holder.selector.setAlpha(0.3f);
+            holder.selector.setOnClickListener(null);
         } else {
-            holder.check.setChecked(true);
-            if (Integer.parseInt(user.getId()) == item.getBookedByMemberId())
+            if (item.isAvailable()) {
+                holder.check.setChecked(false);
                 holder.check.setEnabled(true);
-            else
-                holder.check.setEnabled(false);
+            } else {
+                holder.check.setChecked(true);
+                if (Integer.parseInt(user.getId()) == item.getBookedByMemberId())
+                    holder.check.setEnabled(true);
+                else
+                    holder.check.setEnabled(false);
+            }
         }
+
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
 // generate random color
         int color1 = generator.getRandomColor();

@@ -25,6 +25,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.ResponseBody;
 
@@ -135,6 +136,34 @@ public class Util {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static boolean isMeetingTimeExpired(MeetingRoomSlot slot) {
+        String raw = slot.getStartTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date matchDate = dateFormat.parse(raw);
+            Date currentDate = new Date();
+            return currentDate.after(matchDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean isMeetingCancelable(MeetingRoomSlot slot) {
+        String raw = slot.getStartTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date matchDate = dateFormat.parse(raw);
+            Date currentDate = new Date();
+            long duration = matchDate.getTime() - currentDate.getTime();
+            long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+            return !(diffInMinutes < 15);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     public static String getFriendlyTime(String time) {

@@ -30,9 +30,13 @@ public class Constants {
 
     public interface HTTPStatusCodes {
         int OK = 200;
-        int EMPTY = 204;
+        int CREATED = 201;
+        int NO_CONTENT = 204;
+        int BAD_REQUEST = 400;
         int UNAUTHORIZED = 401;
+        int FORBITTEN = 403;
         int NOT_FOUND = 404;
+        int SERVER_ERROR = 500;
     }
 
     public static double MGDL = 18.0182;

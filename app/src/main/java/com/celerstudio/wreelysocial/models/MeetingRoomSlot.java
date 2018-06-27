@@ -24,6 +24,8 @@ public class MeetingRoomSlot implements Parcelable {
     private Long roomId;
     @SerializedName("meeting_room_name")
     private String name;
+    private boolean expired;
+
 
     public String getName() {
         return name;
@@ -101,6 +103,14 @@ public class MeetingRoomSlot implements Parcelable {
         this.roomId = roomId;
     }
 
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
+
     public MeetingRoomSlot() {
     }
 
@@ -120,6 +130,7 @@ public class MeetingRoomSlot implements Parcelable {
         dest.writeValue(this.memberId);
         dest.writeValue(this.roomId);
         dest.writeString(this.name);
+        dest.writeByte(this.expired ? (byte) 1 : (byte) 0);
     }
 
     protected MeetingRoomSlot(Parcel in) {
@@ -132,6 +143,7 @@ public class MeetingRoomSlot implements Parcelable {
         this.memberId = (Long) in.readValue(Long.class.getClassLoader());
         this.roomId = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
+        this.expired = in.readByte() != 0;
     }
 
     public static final Creator<MeetingRoomSlot> CREATOR = new Creator<MeetingRoomSlot>() {

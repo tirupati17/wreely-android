@@ -126,7 +126,11 @@ public class VendorMeetingRoomActivity extends BaseActivity {
                     confirmBooking(slot, position);
                 } else {
                     if (slot.getBookedByMemberId() == Long.valueOf(getApp().getUser().getId())) {
-                        confirmBookingCancel(slot, position);
+                        if (Util.isMeetingCancelable(slot)) {
+                            confirmBookingCancel(slot, position);
+                        } else {
+                            UiUtils.showSnackbar(findViewById(android.R.id.content), "Cannot cancel this meeting room", Snackbar.LENGTH_LONG);
+                        }
                     }
                 }
             }
@@ -168,29 +172,33 @@ public class VendorMeetingRoomActivity extends BaseActivity {
         String token = vendor.getAccessToken();
         setProgressDialog(vendor.getName(), "Fetching meeting room slots");
         internet.setVisibility(View.GONE);
-        compositeSubscription.add(getAPIService().getMeetingRoomSlots(meetingRoom.getId(), setDate(cal), setDate(cal), token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Response<BasicResponse>>() {
+        compositeSubscription.add(getAPIService().getMeetingRoomSlots(meetingRoom.getId(), setDate(cal), setDate(cal), token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
-            public void call(Response<BasicResponse> response) {
-                dismissDialog();
-                if (response.isSuccessful()) {
-                    items = response.body().getMeetingRoomSlots();
-                    itemsAdapter.addItems(items);
-                    if (items.size() == 0) {
-                        internet.setVisibility(View.VISIBLE);
-                        internet.setText("Meeting Room Slots not available");
-                    }
-                } else {
-                    RestError restError = Util.handleError(response.errorBody());
+            protected void onSuccess(Response<BasicResponse> response) {
+                items = response.body().getMeetingRoomSlots();
+                if (items.size() == 0) {
                     internet.setVisibility(View.VISIBLE);
-                    internet.setText(restError.getMessage());
+                    internet.setText("Meeting Room Slots not available");
+                } else {
+                    List<MeetingRoomSlot> tempItems = new ArrayList<>();
+//                    int scrollToIndex = 0;
+                    for (int i = 0; i < items.size(); i++) {
+                        MeetingRoomSlot slot = items.get(i);
+                        boolean slotExpired = Util.isMeetingTimeExpired(slot);
+                        if (!slotExpired) {
+                            tempItems.add(slot);
+                        }
+                    }
+                    items = tempItems;
+                    itemsAdapter.addItems(items);
+//                    recyclerView.scrollToPosition(scrollToIndex);
                 }
             }
-        }, new Action1<Throwable>() {
+
             @Override
-            public void call(Throwable throwable) {
-                dismissDialog();
+            protected void onFailure(String message) {
                 internet.setVisibility(View.VISIBLE);
-                internet.setText(getString(R.string.something_went_wrong));
+                internet.setText(message);
             }
         }));
     }
@@ -301,6 +309,7 @@ public class VendorMeetingRoomActivity extends BaseActivity {
     }
 
     public void confirmBookingCancel(MeetingRoomSlot meetingRoomSlot, int pos) {
+
         CustomPopoverView customPopoverView = CustomPopoverView.builder(this)
                 .withNegativeTitle("Cancel")
                 .withPositiveTitle("OK")

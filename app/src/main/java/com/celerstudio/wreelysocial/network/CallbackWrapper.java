@@ -3,30 +3,41 @@ package com.celerstudio.wreelysocial.network;
 import android.app.Activity;
 import android.util.Log;
 
+import com.celerstudio.wreelysocial.Constants;
 import com.celerstudio.wreelysocial.models.BasicResponse;
 import com.celerstudio.wreelysocial.models.RestError;
 import com.celerstudio.wreelysocial.views.activity.BaseActivity;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import okhttp3.ResponseBody;
+import okhttp3.internal.Internal;
 import retrofit2.HttpException;
 import retrofit2.Response;
+import rx.Observable;
 import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public abstract class CallbackWrapper<T> implements Observer<T> {
     protected abstract void onSuccess(T t);
 
     protected abstract void onFailure(String message);
 
+
     BaseActivity baseActivity;
 
     public CallbackWrapper(Activity activity) {
         baseActivity = (BaseActivity) activity;
+    }
+
+    public CallbackWrapper() {
     }
 
     @Override
@@ -36,6 +47,10 @@ public abstract class CallbackWrapper<T> implements Observer<T> {
 
     @Override
     public void onError(Throwable e) {
+        //404 Not Found
+//        500 Internal Server Error
+        if (baseActivity != null)
+            baseActivity.dismissDialog();
         if (e instanceof HttpException) {
             ResponseBody responseBody = ((HttpException) e).response().errorBody();
             String error = getErrorMessage(responseBody);
@@ -45,9 +60,12 @@ public abstract class CallbackWrapper<T> implements Observer<T> {
             onFailure("Socket Timeout Exception");
         } else if (e instanceof IOException) {
             onFailure("Network Error (IOException)");
+        } else if (e instanceof JsonSyntaxException) {
+            onFailure("JsonSyntaxException Or Internal Server Error");
         } else {
-            Log.d("GenericFailure", e.getMessage());
-            onFailure(e.getMessage());
+//            if (e.getCause() != null)
+//                Log.d("GenericFailure", e.getCause().getMessage());
+//            onFailure(e.getMessage());
         }
     }
 
@@ -59,8 +77,15 @@ public abstract class CallbackWrapper<T> implements Observer<T> {
         if (br.isSuccessful()) {
             onSuccess(t);
         } else {
-            RestError restError = handleError(br.errorBody());
-            onFailure(restError.getMessage());
+            int code = br.code();
+            if (code == Constants.HTTPStatusCodes.NOT_FOUND) {
+                onFailure(code + " Not Found");
+            } else if (code == Constants.HTTPStatusCodes.SERVER_ERROR) {
+                onFailure(code + " Internal Server Error");
+            } else {
+                RestError restError = handleError(br.errorBody());
+                onFailure(restError.getMessage());
+            }
         }
     }
 
@@ -71,6 +96,13 @@ public abstract class CallbackWrapper<T> implements Observer<T> {
         if (response instanceof ResponseBody) {
             ResponseBody responseBody = response;
             try {
+//                JSONObject jsonObject = new JSONObject(responseBody.string());
+//                if (jsonObject.has("message") && jsonObject.get("message") instanceof String) {
+//                    restError = new RestError();
+//                    restError.setMessage(new String[]{jsonObject.getString("message")});
+//                } else {
+//
+//                }
                 restError = new Gson().fromJson(new String(responseBody.bytes()), RestError.class);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -87,4 +119,9 @@ public abstract class CallbackWrapper<T> implements Observer<T> {
             return e.getMessage();
         }
     }
+
+    public static Observable<Response<BasicResponse>> call(Observable observable) {
+        return observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
 }
