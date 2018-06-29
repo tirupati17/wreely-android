@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.celerstudio.wreelysocial.models.Day;
 import com.celerstudio.wreelysocial.models.User;
 import com.celerstudio.wreelysocial.models.Vendor;
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,6 +17,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.viewModel.SkyAppDataViewModel;
 import com.celerstudio.wreelysocial.views.CustomPopoverView;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,6 +91,7 @@ public class VendorsDashboardActivity extends BaseActivity {
         u.setId(vendor.getFirebaseId());
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("friend", u);
+        intent.putExtra("vendor", vendor);
         startActivity(intent);
 
 //        Intent intent = new Intent(this, CaseDiscussionListActivity.class);

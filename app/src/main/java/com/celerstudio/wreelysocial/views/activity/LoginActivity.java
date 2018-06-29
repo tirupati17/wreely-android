@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -14,21 +15,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.celerstudio.wreelysocial.BuildConfig;
+import com.celerstudio.wreelysocial.assist.OnGetDataListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.models.User;
 import com.celerstudio.wreelysocial.util.UiUtils;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OneSignal;
 
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,8 +78,7 @@ public class LoginActivity extends BaseActivity {
             etPassword.setText("123456789");
         }
 
-
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
     }
 
     @Override
@@ -120,7 +124,7 @@ public class LoginActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    private void signinUserOnFirebase(User user) {
+    private void signinUserOnFirebase(final User user) {
         showDialog(getString(R.string.app_name), "Wait while we log you in");
         mAuth.signInWithEmailAndPassword(user.getEmail(), etPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -133,18 +137,21 @@ public class LoginActivity extends BaseActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
-                                User user = dataSnapshot.getValue(User.class);
-                                user.setAccessToken(id);
+                                User tu = new User();
+                                tu.setAccessToken(user.getAccessToken());
                                 try {
                                     HashMap mapMessage = (HashMap) dataSnapshot.getValue();
-                                    user.setCompanyKey((String) mapMessage.get("company_key"));
-                                    user.setMobile((String) mapMessage.get("contact_no"));
-                                    user.setName((String) mapMessage.get("full_name"));
-                                    user.setCompanyKey((String) mapMessage.get("company_key"));
+                                    tu.setCompanyKey((String) mapMessage.get("company_key"));
+                                    tu.setMobile((String) mapMessage.get("contact_no"));
+                                    tu.setName((String) mapMessage.get("full_name"));
+                                    tu.setOccupation((String) mapMessage.get("occupation"));
+                                    tu.setEmail(user.getEmail());
+                                    tu.setVendors((List<String>) mapMessage.get("vendors"));
+                                    tu.setId((String) mapMessage.get("id"));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                saveUserAndNavigate(user);
+                                saveUserAndNavigate(tu);
                             } else {
                                 UiUtils.showSnackbar(findViewById(android.R.id.content), "There was some problem while login in", Snackbar.LENGTH_SHORT);
                             }
@@ -156,6 +163,7 @@ public class LoginActivity extends BaseActivity {
                         }
                     });
                 } else {
+
                     UiUtils.showSnackbar(findViewById(android.R.id.content), "There was some problem while login in", Snackbar.LENGTH_SHORT);
                 }
             }
@@ -169,5 +177,26 @@ public class LoginActivity extends BaseActivity {
         getApp().setUser();
         startActivity(new Intent(LoginActivity.this, VendorsActivity.class));
         finish();
+    }
+
+    private void getUsersExtraData(String id) {
+        myRef.child(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    HashMap mapMessage = (HashMap) dataSnapshot.getValue();
+                    Log.d("mapMessage", mapMessage.toString());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("databaseError", databaseError.getMessage());
+            }
+        });
+
     }
 }

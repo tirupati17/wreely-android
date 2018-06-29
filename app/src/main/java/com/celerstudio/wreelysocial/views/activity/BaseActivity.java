@@ -168,9 +168,9 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
         mDialog.dismiss();
     }
 
-    public void setLayoutManager(RecyclerView recyclerView) {
+    public void setLayoutManager(RecyclerView recyclerView, int orientation) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        linearLayoutManager.setOrientation(orientation);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 

@@ -105,7 +105,7 @@ public class AndroidApp extends Application implements ConnectivityReceiverListe
     }
 
     public DatabaseReference getFirebaseDBRef(String table) {
-        return myRef = firebaseDatabase.getReference(table);
+        return myRef = firebaseDatabase.getReference().child(table);
     }
 
     private class NotificationReceivedHandler implements OneSignal.NotificationReceivedHandler {

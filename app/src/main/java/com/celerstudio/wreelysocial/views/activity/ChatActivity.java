@@ -2,6 +2,7 @@ package com.celerstudio.wreelysocial.views.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.VerticalSpaceItemDecoration;
 import com.celerstudio.wreelysocial.models.Chat;
 import com.celerstudio.wreelysocial.models.User;
+import com.celerstudio.wreelysocial.models.Vendor;
 import com.celerstudio.wreelysocial.persistence.ChatMessage;
 import com.celerstudio.wreelysocial.persistence.DatabaseUtils;
 import com.celerstudio.wreelysocial.persistence.WreelyDataViewModel;
@@ -35,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.xw.repo.XEditText;
 
 import java.util.ArrayList;
@@ -49,6 +52,7 @@ import butterknife.OnClick;
 public class ChatActivity extends BaseActivity implements BaseActivity.OptionMenuListener {
 
     User friend;
+    Vendor vendor;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -69,6 +73,7 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
     private Query getDataQuery;
     private ValueEventListener getChatValueEventListener;
     private ChildEventListener listenForChatChildEventListener;
+    List<ChatMessage> chatMessages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,22 +83,22 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
 
         user = getApp().getPreferences().getUser();
         friend = getIntent().getParcelableExtra("friend");
+        if (getIntent().hasExtra("vendor"))
+            vendor = getIntent().getParcelableExtra("vendor");
 
         if (friend.getName().equalsIgnoreCase("group chat")) {
             databaseReference = getApp().getFirebaseDBRef("groupChat/" + chatRoomId());
         }
 
-        fetchData();
-
-        Log.d("HashCode", String.valueOf(chatRoomId()));
-
-        chatMessageAdapter = new ChatMessageAdapter(new ArrayList<ChatMessage>(), this);
+        chatMessageAdapter = new ChatMessageAdapter(chatMessages, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(16, true));
         recyclerView.setAdapter(chatMessageAdapter);
+
+//        fetchData();
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,12 +157,12 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
             });
         }
         toolbar.setTitle(friend.getName());
-        bindViewModel();
         listenForIncomingMessage();
         if (!friend.getName().equalsIgnoreCase("group chat")) {
             setOptionMenu(R.menu.chat, this);
         } else {
             toolbar.setTitle("Group Conversations");
+            setOptionMenu(R.menu.group_chat, this);
         }
 
     }
@@ -185,17 +190,6 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
         }
     }
 
-    public void bindViewModel() {
-        skyAppDataViewModel = ViewModelProviders.of(this).get(WreelyDataViewModel.class);
-        skyAppDataViewModel.findChatByRoomId(chatRoomId()).observe(this, new Observer<List<ChatMessage>>() {
-            @Override
-            public void onChanged(@Nullable List<ChatMessage> chatMessages) {
-                chatMessageAdapter.addItems(chatMessages);
-                recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
-            }
-        });
-    }
-
     private void fetchData() {
         getChatValueEventListener = new ValueEventListener() {
             @Override
@@ -216,22 +210,13 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
     }
 
     private void collectChats(Map<String, Object> values) {
-        //iterate through each user, ignoring their UID
-        List<User> tempItems = new ArrayList<>();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
-            //Get user map
             Map mapChat = (Map) entry.getValue();
-            //Get phone field and append to list
             Chat chat = Chat.map(user.getAccessToken(), mapChat);
-
-            ChatMessage chatMessage = DatabaseUtils.getDatabase(this).chatMessageDao().findChatBySenderIdAndTimestamp(chat.getTimestamp());
-
-            if (chatMessage == null) {
-                DatabaseUtils.saveChatMessage(this, Chat.cloneToChatMessage(chat));
-            } else {
-                Log.d("ChatMessage", "chatmessage exists");
-            }
+//            chatMessages.add(Chat.cloneToChatMessage(chat));
         }
+//        chatMessageAdapter.addItems(chatMessages);
+//        recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
     }
 
     private void listenForIncomingMessage() {
@@ -241,12 +226,10 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
                 if (dataSnapshot.getValue() != null) {
                     HashMap mapMessage = (HashMap) dataSnapshot.getValue();
                     Chat newMessage = Chat.map(user.getAccessToken(), mapMessage);
-                    ChatMessage chatMessage = DatabaseUtils.getDatabase(ChatActivity.this).chatMessageDao().findChatBySenderIdAndTimestamp(newMessage.getTimestamp());
-                    if (chatMessage == null) {
-                        DatabaseUtils.saveChatMessage(ChatActivity.this, Chat.cloneToChatMessage(newMessage));
-                    } else {
-                        Log.d("ChatMessage", "chatmessage exists");
-                    }
+                    ChatMessage chatMessage = Chat.cloneToChatMessage(newMessage);
+                    Log.d("chatMessage", new Gson().toJson(chatMessage));
+                    chatMessageAdapter.add(chatMessage);
+                    recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
                 }
             }
 
@@ -283,7 +266,13 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
 
     @Override
     public void onMenuClicked(MenuItem item) {
-        showDialog();
+        if (!friend.getName().equalsIgnoreCase("group chat")) {
+            showDialog();
+        } else {
+            Intent intent = new Intent(this, GroupDetailActivity.class);
+            intent.putExtra("vendor", vendor);
+            startActivity(intent);
+        }
     }
 
     private void showDialog() {

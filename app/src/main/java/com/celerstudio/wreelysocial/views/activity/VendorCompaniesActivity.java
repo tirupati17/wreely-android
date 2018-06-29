@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.celerstudio.wreelysocial.ConnectivityReceiver;
@@ -14,6 +15,7 @@ import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.VerticalSpaceItemDecoration;
 import com.celerstudio.wreelysocial.models.BasicResponse;
 import com.celerstudio.wreelysocial.models.Company;
+import com.celerstudio.wreelysocial.models.Member;
 import com.celerstudio.wreelysocial.models.RestError;
 import com.celerstudio.wreelysocial.models.Vendor;
 import com.celerstudio.wreelysocial.util.UiUtils;
@@ -26,6 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import retrofit2.Response;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -37,13 +40,14 @@ public class VendorCompaniesActivity extends BaseActivity {
     public static final String VENDOR = "vendor";
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.search)
+    EditText search;
 
     Vendor vendor;
 
     List<Company> items = new ArrayList<>();
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     private CompositeSubscription compositeSubscription;
     private CompanyAdapter itemsAdapter;
 
@@ -125,6 +129,29 @@ public class VendorCompaniesActivity extends BaseActivity {
         } else {
             internet.setVisibility(View.GONE);
             fetchData();
+        }
+    }
+
+    @OnTextChanged(R.id.search)
+    void onSearch() {
+        internet.setVisibility(View.GONE);
+        internet.setText(getString(R.string.network_not_available));
+        String searchStr = search.getText().toString();
+        List<Company> searchedItems = new ArrayList<>();
+        if (Util.textIsEmpty(searchStr)) {
+            itemsAdapter.addItems(items);
+        } else {
+            for (Company company : items) {
+                if (company.getName().toLowerCase().contains(searchStr.toLowerCase()) || company.getContactPersonName().toLowerCase().contains(searchStr.toLowerCase())) {
+                    searchedItems.add(company);
+                }
+            }
+
+            if (searchedItems.size() == 0) {
+                internet.setText("No results found for '" + searchStr + "'");
+                internet.setVisibility(View.VISIBLE);
+            }
+            itemsAdapter.addItems(searchedItems);
         }
     }
 

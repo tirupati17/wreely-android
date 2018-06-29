@@ -5,36 +5,37 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.celerstudio.wreelysocial.R;
-import com.celerstudio.wreelysocial.persistence.ChatMessage;
-import com.celerstudio.wreelysocial.util.Util;
+import com.celerstudio.wreelysocial.models.Company;
+import com.celerstudio.wreelysocial.models.Day;
 
 import java.util.List;
 
-public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.DataObjectHolder> {
+public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DataObjectHolder> {
     private static String LOG_TAG = "CommonItemAdapter";
-    public List<ChatMessage> mDataset;
+    public List<Day> mDataset;
     private static MyClickListener myClickListener;
     private Context context;
 
     public static class DataObjectHolder extends RecyclerView.ViewHolder
             implements View
             .OnClickListener {
-        TextView recvd, sent, name;
-        RelativeLayout receivedCont, sentCont;
+        TextView day, dayOfMonth, month;
+        View underline;
         LinearLayout selector;
 
         public DataObjectHolder(View itemView) {
             super(itemView);
-            recvd = (TextView) itemView.findViewById(R.id.recvd);
-            sent = (TextView) itemView.findViewById(R.id.sent);
-            name = (TextView) itemView.findViewById(R.id.name);
-            receivedCont = (RelativeLayout) itemView.findViewById(R.id.received_cont);
-            sentCont = (RelativeLayout) itemView.findViewById(R.id.sent_cont);
+            day = (TextView) itemView.findViewById(R.id.day);
+            dayOfMonth = (TextView) itemView.findViewById(R.id.day_of_month);
+            month = (TextView) itemView.findViewById(R.id.month);
+            underline = (View) itemView.findViewById(R.id.underline);
             selector = (LinearLayout) itemView.findViewById(R.id.selector);
             selector.setOnClickListener(this);
         }
@@ -50,7 +51,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         this.myClickListener = myClickListener;
     }
 
-    public ChatMessageAdapter(List<ChatMessage> myDataset, Context context) {
+    public DayAdapter(List<Day> myDataset, Context context) {
         this.context = context;
         this.mDataset = myDataset;
     }
@@ -59,7 +60,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     public DataObjectHolder onCreateViewHolder(ViewGroup parent,
                                                int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_message, parent, false);
+                .inflate(R.layout.item_day, parent, false);
         context = parent.getContext();
         DataObjectHolder dataObjectHolder = new DataObjectHolder(view);
         return dataObjectHolder;
@@ -68,21 +69,18 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     @Override
     public void onBindViewHolder(DataObjectHolder holder, int position) {
         holder.setIsRecyclable(false);
-        ChatMessage item = mDataset.get(position);
-        holder.receivedCont.setVisibility(View.GONE);
-        holder.sentCont.setVisibility(View.GONE);
-        holder.name.setVisibility(View.GONE);
-        if (item.isIncoming()) {
-            if (Util.textIsEmpty(item.getReceiverId())) {
-                holder.name.setVisibility(View.VISIBLE);
-                holder.name.setText(item.getUserName());
-            }
-            holder.receivedCont.setVisibility(View.VISIBLE);
-            holder.recvd.setText(item.getMessage());
+        Day item = mDataset.get(position);
+        holder.dayOfMonth.setText(String.valueOf(item.getDayOfMonth()));
+        holder.day.setText(item.getDay());
+        holder.month.setText(item.getMonth());
+        if (item.isChecked()) {
+            holder.selector.setSelected(true);
+            holder.underline.setVisibility(View.VISIBLE);
         } else {
-            holder.sentCont.setVisibility(View.VISIBLE);
-            holder.sent.setText(item.getMessage());
+            holder.selector.setSelected(false);
+            holder.underline.setVisibility(View.INVISIBLE);
         }
+        holder.selector.setSelected(item.isChecked());
         holder.selector.setTag(item);
     }
 
@@ -92,19 +90,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         notifyItemRemoved(index);
     }
 
-    public void addItems(List<ChatMessage> items) {
+    public void addItems(List<Day> items) {
         this.mDataset = items;
         notifyDataSetChanged();
-    }
-
-    public void add(ChatMessage item) {
-        this.mDataset.add(item);
-        notifyItemInserted(mDataset.size() - 1);
-    }
-
-    public void addMoreItems(List<ChatMessage> items) {
-        this.mDataset.addAll(items);
-        notifyItemRangeInserted(mDataset.size() - 1, items.size());
     }
 
     @Override
