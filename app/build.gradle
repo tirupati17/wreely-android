@@ -13,16 +13,19 @@ repositories {
 android {
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "com.celerstudio.wreelysocial"
         // TODO: Please update the OneSignal ID below to yours!
         manifestPlaceholders = [onesignal_app_id               : "b760c5a5-cf5e-4a24-8629-8f7feb57a4b9",
                                 // Project number pulled from dashboard, local value is ignored.
                                 onesignal_google_project_number: 'REMOTE']
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 27
-        versionCode 3
-        versionName "1.0.1"
+        versionCode 4
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "DATA_BASE_NAME", "\"wreelysocial.db\"")
         buildConfigField "int", "DB_VERSION", "1"

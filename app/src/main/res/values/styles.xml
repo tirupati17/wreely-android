@@ -18,4 +18,9 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="AppThemeRatingBar" parent="Theme.AppCompat">
+        <item name="colorAccent">#a2f964</item>
+        <item name="android:colorControlNormal">@color/grey5</item>
+    </style>
+
 </resources>

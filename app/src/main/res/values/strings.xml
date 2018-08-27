@@ -113,4 +113,10 @@ in right ventricular volume with clinical benefit in the intermediate term. Unti
 percutaneous valve technology for large RVOTs is refined and more widely
 available, branch PA valve implantation remains an option for select patients.</string>
     <string name="title_activity_company_detail">CompanyDetailActivity</string>
+    <string name="transition_photo">transition_photo</string>
+    <string name="transition_title">transition_title</string>
+    <string name="transition_city">transition_city</string>
+    <string name="title_activity_work_space_location">Workspace Location</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCe5WeG-SFcS1extiAEzd7fKuU9Rd7odSc</string>
+    <string name="Rs">\u20B9</string>
 </resources>
