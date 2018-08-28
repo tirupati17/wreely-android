@@ -68,8 +68,14 @@ public class VendorsActivity extends BaseActivity implements BaseActivity.Option
         commonItemAdapter.setOnItemClickListener(new VendorAdapter.MyClickListener() {
             @Override
             public void onItemClick(int position, View v) {
+                Vendor item = items.get(position);
                 Intent intent = new Intent(VendorsActivity.this, VendorsDashboardActivity.class);
-                intent.putExtra(VendorsDashboardActivity.VENDOR, items.get(position));
+                if (item.getName().equalsIgnoreCase("nearby workspaces")) {
+                    intent = new Intent(VendorsActivity.this, NearbyWorkspacesActivity.class);
+                } else {
+                    intent.putExtra(VendorsDashboardActivity.VENDOR, items.get(position));
+                }
+
                 startActivity(intent);
             }
         });
@@ -93,6 +99,7 @@ public class VendorsActivity extends BaseActivity implements BaseActivity.Option
         TextView count = (TextView) item.getActionView().findViewById(R.id.badge);
 //        count.setText(enabled ? String.valueOf(notifications.size()) : "0");
         count.setVisibility(View.GONE);
+
 
     }
 

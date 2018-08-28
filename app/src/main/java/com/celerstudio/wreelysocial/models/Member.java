@@ -98,7 +98,7 @@ public class Member implements Parcelable {
         this.flexiCount = in.readString();
     }
 
-    public static final Parcelable.Creator<Member> CREATOR = new Parcelable.Creator<Member>() {
+    public static final Creator<Member> CREATOR = new Creator<Member>() {
         @Override
         public Member createFromParcel(Parcel source) {
             return new Member(source);

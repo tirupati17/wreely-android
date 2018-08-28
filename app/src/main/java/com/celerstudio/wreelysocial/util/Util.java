@@ -57,6 +57,9 @@ public class Util {
         if (value == null)
             return true;
 
+        if (value.equalsIgnoreCase("null"))
+            return true;
+
         boolean empty = false;
 
         String message = value.trim();

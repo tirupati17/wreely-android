@@ -26,8 +26,10 @@ import com.celerstudio.wreelysocial.assist.FragmentAdapter;
 import com.celerstudio.wreelysocial.models.BasicResponse;
 import com.celerstudio.wreelysocial.models.Company;
 import com.celerstudio.wreelysocial.models.Member;
+import com.celerstudio.wreelysocial.models.NearbyWorkspace;
 import com.celerstudio.wreelysocial.models.RestError;
 import com.celerstudio.wreelysocial.models.Vendor;
+import com.celerstudio.wreelysocial.network.CallbackWrapper;
 import com.celerstudio.wreelysocial.util.UiUtils;
 import com.celerstudio.wreelysocial.util.Util;
 import com.celerstudio.wreelysocial.views.adapter.MemberAdapter;
@@ -155,26 +157,30 @@ public class GroupDetailActivity extends BaseActivity {
         items = new ArrayList<>();
         String token = vendor.getAccessToken();
         setProgressDialog(vendor.getName(), "Fetching members");
-        compositeSubscription.add(getAPIService().getVendorMembers(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Response<BasicResponse>>() {
+        compositeSubscription.add(getAPIService().getVendorMembers(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
-            public void call(Response<BasicResponse> response) {
-                dismissDialog();
-                if (response.isSuccessful()) {
-                    items = response.body().getMembers();
-                    itemsAdapter.addItems(items);
-                } else {
-                    RestError restError = Util.handleError(response.errorBody());
-                    UiUtils.showSnackbar(findViewById(android.R.id.content), restError.getMessage(), Snackbar.LENGTH_LONG);
-                }
+            protected void onSuccess(Response<BasicResponse> response) {
+                items = response.body().getMembers();
+                itemsAdapter.addItems(items);
             }
-        }, new Action1<Throwable>() {
+
             @Override
-            public void call(Throwable throwable) {
-                dismissDialog();
-                internet.setVisibility(View.VISIBLE);
-                internet.setText(getString(R.string.something_went_wrong));
+            protected void onFailure(String message) {
+                UiUtils.showSnackbar(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
             }
         }));
+
+//        compositeSubscription.add(getAPIService().getNearbyWorkspaces(42.3736016, -71.09353620000002, 4, token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<List<NearbyWorkspace>>>() {
+//            @Override
+//            protected void onSuccess(Response<List<NearbyWorkspace>> listResponse) {
+//
+//            }
+//
+//            @Override
+//            protected void onFailure(String message) {
+//
+//            }
+//        }));
     }
 
     private void initFetching() {

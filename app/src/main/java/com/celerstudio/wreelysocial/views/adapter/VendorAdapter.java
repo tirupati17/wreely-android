@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.models.Company;
 import com.celerstudio.wreelysocial.models.Vendor;
+import com.celerstudio.wreelysocial.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -68,7 +69,9 @@ public class VendorAdapter extends RecyclerView.Adapter<VendorAdapter.DataObject
         holder.setIsRecyclable(false);
         Vendor item = mDataset.get(position);
         holder.name.setText(item.getName());
-        Picasso.with(context).load(item.getVendorLogoUrl()).into(holder.logo);
+        if (!Util.textIsEmpty(item.getVendorLogoUrl())) {
+            Picasso.with(context).load(item.getVendorLogoUrl()).into(holder.logo);
+        }
         holder.selector.setTag(item);
     }
 
@@ -79,7 +82,12 @@ public class VendorAdapter extends RecyclerView.Adapter<VendorAdapter.DataObject
     }
 
     public void addItems(List<Vendor> items) {
+        Vendor nearbyItem = new Vendor();
+        nearbyItem.setName("Nearby Workspaces");
+        nearbyItem.setVendorLogoUrl(null);
+        items.add(nearbyItem);
         this.mDataset = items;
+        this.mDataset.add(0, nearbyItem);
         notifyDataSetChanged();
     }
 
