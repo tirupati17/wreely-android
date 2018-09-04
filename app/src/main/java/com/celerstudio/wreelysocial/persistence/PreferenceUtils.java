@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import com.celerstudio.wreelysocial.models.Vendor;
 import com.google.gson.Gson;
 import com.celerstudio.wreelysocial.Constants;
 import com.celerstudio.wreelysocial.models.User;
@@ -28,6 +29,23 @@ public class PreferenceUtils extends PreferenceHelper {
     public void setUser(User user) {
         setUserLoggedIn();
         addPreference(Constants.PreferenceKeys.USER_DATA, new Gson().toJson(user));
+    }
+
+    public void setVendor(Vendor vendor) {
+        addPreference(Constants.PreferenceKeys.ACTIVE_WORKSPACE, new Gson().toJson(vendor));
+    }
+
+    public void clearVendor() {
+        addPreference(Constants.PreferenceKeys.ACTIVE_WORKSPACE, "");
+    }
+
+    public Vendor getVendor() {
+        Vendor vendor = null;
+        String raw = getString(Constants.PreferenceKeys.ACTIVE_WORKSPACE, "");
+        Log.d("Vendor Data", raw);
+        if (!raw.equalsIgnoreCase(""))
+            vendor = new Gson().fromJson(raw, Vendor.class);
+        return vendor;
     }
 
     public User getUser() {

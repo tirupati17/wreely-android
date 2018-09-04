@@ -19,6 +19,7 @@ import com.celerstudio.wreelysocial.models.MeetingRoom;
 import com.celerstudio.wreelysocial.models.Member;
 import com.celerstudio.wreelysocial.models.RestError;
 import com.celerstudio.wreelysocial.models.Vendor;
+import com.celerstudio.wreelysocial.network.CallbackWrapper;
 import com.celerstudio.wreelysocial.util.UiUtils;
 import com.celerstudio.wreelysocial.util.Util;
 import com.celerstudio.wreelysocial.views.adapter.MeetingRoomAdapter;
@@ -95,30 +96,22 @@ public class VendorMeetingRoomsActivity extends BaseActivity implements BaseActi
 
     private void fetchData() {
         items = new ArrayList<>();
-        String token = vendor.getAccessToken();
-        setProgressDialog(vendor.getName(), "Fetching members");
-        compositeSubscription.add(getAPIService().getMeetingRooms(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Response<BasicResponse>>() {
+        setProgressDialog(vendor.getName(), "Fetching meeting rooms");
+        compositeSubscription.add(getAPIService().getMeetingRooms(vendor.getId().toString(), getApp().getUser().getAccessToken()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
-            public void call(Response<BasicResponse> response) {
-                dismissDialog();
-                if (response.isSuccessful()) {
-                    items = response.body().getMeetingRooms();
-                    if (items.size() == 0) {
-                        internet.setVisibility(View.VISIBLE);
-                        internet.setText("Meeting Rooms not available");
-                    }
-                    itemsAdapter.addItems(items);
-                } else {
-                    RestError restError = Util.handleError(response.errorBody());
-                    UiUtils.showSnackbar(findViewById(android.R.id.content), restError.getMessage(), Snackbar.LENGTH_LONG);
+            protected void onSuccess(Response<BasicResponse> response) {
+                items = response.body().getMeetingRooms();
+                itemsAdapter.addItems(items);
+                if (items.size() == 0) {
+                    internet.setVisibility(View.VISIBLE);
+                    internet.setText("Meeting Rooms not available");
                 }
             }
-        }, new Action1<Throwable>() {
+
             @Override
-            public void call(Throwable throwable) {
-                dismissDialog();
+            protected void onFailure(String message) {
                 internet.setVisibility(View.VISIBLE);
-                internet.setText(getString(R.string.something_went_wrong));
+                internet.setText(message);
             }
         }));
     }
@@ -145,7 +138,7 @@ public class VendorMeetingRoomsActivity extends BaseActivity implements BaseActi
         TextView v = (TextView) view;
         if (v.getText().toString().toLowerCase().contains("settings")) {
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-        } else if (v.getText().toString().toLowerCase().contains("try again")) {
+        } else {
             internet.setVisibility(View.GONE);
             fetchData();
         }

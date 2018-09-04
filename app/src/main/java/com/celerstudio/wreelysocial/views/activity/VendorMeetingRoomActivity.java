@@ -239,10 +239,10 @@ public class VendorMeetingRoomActivity extends BaseActivity {
 
     private void fetchData(String date) {
         items = new ArrayList<>();
-        String token = vendor.getAccessToken();
+        String token = getApp().getUser().getAccessToken();
         setProgressDialog(vendor.getName(), "Fetching meeting room slots");
         internet.setVisibility(View.GONE);
-        compositeSubscription.add(getAPIService().getMeetingRoomSlots(meetingRoom.getId(), date, date, token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
+        compositeSubscription.add(getAPIService().getMeetingRoomSlots(vendor.getId().toString(), meetingRoom.getId(), date, date, token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
             protected void onSuccess(Response<BasicResponse> response) {
                 items = response.body().getMeetingRoomSlots();
@@ -295,7 +295,7 @@ public class VendorMeetingRoomActivity extends BaseActivity {
         TextView v = (TextView) view;
         if (v.getText().toString().toLowerCase().contains("settings")) {
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-        } else if (v.getText().toString().toLowerCase().contains("try again")) {
+        } else {
             internet.setVisibility(View.GONE);
             fetchData(getCurrentDate());
         }
@@ -407,11 +407,11 @@ public class VendorMeetingRoomActivity extends BaseActivity {
     }
 
     private void bookMeetingRoom(MeetingRoomSlot meetingRoomSlot, int pos) {
-        String token = vendor.getAccessToken();
+        String token = getApp().getUser().getAccessToken();
         meetingRoomSlot.setMemberId(Long.valueOf(getApp().getUser().getId()));
         meetingRoomSlot.setRoomId(Long.valueOf(meetingRoomSlot.getMeetingRoomId()));
         setProgressDialog("Meeting room booking", "wait while we book this meeting room for you");
-        compositeSubscription.add(getAPIService().bookMeetingRoom(meetingRoomSlot, token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
+        compositeSubscription.add(getAPIService().bookMeetingRoom(vendor.getId().toString(), meetingRoomSlot, token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
             protected void onSuccess(Response<BasicResponse> response) {
                 if (!Util.textIsEmpty(response.body().getMessage())) {
@@ -432,11 +432,11 @@ public class VendorMeetingRoomActivity extends BaseActivity {
     }
 
     private void cancelMeetingRoom(MeetingRoomSlot meetingRoomSlot, int pos) {
-        String token = vendor.getAccessToken();
+        String token = getApp().getUser().getAccessToken();
         meetingRoomSlot.setMemberId(Long.valueOf(getApp().getUser().getId()));
         meetingRoomSlot.setRoomId(Long.valueOf(meetingRoomSlot.getMeetingRoomId()));
         setProgressDialog("Meeting room cancel", "wait while we cancel this meeting room for you");
-        compositeSubscription.add(getAPIService().cancelMeetingRoom(meetingRoomSlot.getId(), meetingRoomSlot.getBookedByMemberId(), token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
+        compositeSubscription.add(getAPIService().cancelMeetingRoom(vendor.getId().toString(), meetingRoomSlot.getId(), meetingRoomSlot.getBookedByMemberId(), token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
             protected void onSuccess(Response<BasicResponse> response) {
                 if (!Util.textIsEmpty(response.body().getMessage())) {

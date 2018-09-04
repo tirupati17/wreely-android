@@ -1,8 +1,11 @@
 package com.celerstudio.wreelysocial.views.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -15,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.celerstudio.wreelysocial.BuildConfig;
+import com.celerstudio.wreelysocial.assist.SMSReceiver;
 import com.celerstudio.wreelysocial.models.BasicResponse;
 import com.celerstudio.wreelysocial.models.MobileVerification;
 import com.celerstudio.wreelysocial.network.CallbackWrapper;
@@ -28,6 +32,11 @@ import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.models.User;
 import com.celerstudio.wreelysocial.util.UiUtils;
 import com.google.firebase.database.ValueEventListener;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +79,8 @@ public class LoginActivity extends BaseActivity {
 
     MobileVerification mvr = new MobileVerification();
 
+    private SMSReceiver smsReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +96,17 @@ public class LoginActivity extends BaseActivity {
         }
 
         setSupportActionBar(toolbar);
+
+        smsReceiver = new SMSReceiver();
+        smsReceiver.setListener(new SMSReceiver.SMSListener() {
+            @Override
+            public void onReceived(String val) {
+                etOtp.setText(val);
+                onClick(submit);
+            }
+        });
+        registerReceiver(smsReceiver, new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
+
     }
 
     @Override
@@ -97,14 +119,38 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (smsReceiver != null) {
+            unregisterReceiver(smsReceiver);
+        }
+    }
+
     @OnClick(R.id.submit)
     void onClick(View view) {
         if (submit.getText().toString().equalsIgnoreCase("verify mobile")) {
             if (isMobileValid()) {
-                mvr = new MobileVerification();
-                mvr.setMobileNumber(etMobile.getText().toString());
-                mvr.setCountryCode("+91");
-                login(mvr);
+                Dexter.withActivity(this)
+                        .withPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
+                        .withListener(new MultiplePermissionsListener() {
+                            @Override
+                            public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                                if (multiplePermissionsReport.areAllPermissionsGranted()) {
+
+                                    mvr = new MobileVerification();
+                                    mvr.setMobileNumber(etMobile.getText().toString());
+                                    mvr.setCountryCode("+91");
+                                    login(mvr);
+
+                                }
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                                permissionToken.continuePermissionRequest();
+                            }
+                        }).check();
             }
         } else if (submit.getText().toString().equalsIgnoreCase("verify otp")) {
             if (isOtpValid()) {
@@ -202,8 +248,7 @@ public class LoginActivity extends BaseActivity {
         compositeSubscription.add(getAPIService().loginConfirmation(mvr).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
             protected void onSuccess(Response<BasicResponse> response) {
-                dismissDialog();
-
+                getMemberDetails(response.body().getAccessToken());
             }
 
             @Override
@@ -211,7 +256,23 @@ public class LoginActivity extends BaseActivity {
                 UiUtils.showSnackbar(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
             }
         }));
+    }
 
+    private void getMemberDetails(final String accessToken) {
+        showDialog(getString(R.string.app_name), "Fetching profile data");
+        compositeSubscription.add(getAPIService().getMemberDetails(accessToken).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
+            @Override
+            protected void onSuccess(Response<BasicResponse> response) {
+                User user = response.body().getUser();
+                user.setAccessToken(accessToken);
+                saveUserAndNavigate(user);
+            }
+
+            @Override
+            protected void onFailure(String message) {
+                UiUtils.showSnackbar(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+            }
+        }));
     }
 
     private void saveUserAndNavigate(User user) {

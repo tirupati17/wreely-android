@@ -19,6 +19,8 @@ public class BasicResponse {
     private List<MeetingRoomSlot> meetingRoomSlots;
     @SerializedName("meeting_rooms_history")
     private List<MeetingRoomSlot> meetingRoomHistory;
+    private List<Vendor> vendors;
+    private List<Event> events;
     @SerializedName("member_id")
     private Long memberId;
 
@@ -104,5 +106,21 @@ public class BasicResponse {
 
     public void setMemberId(Long memberId) {
         this.memberId = memberId;
+    }
+
+    public List<Vendor> getVendors() {
+        return vendors;
+    }
+
+    public void setVendors(List<Vendor> vendors) {
+        this.vendors = vendors;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 }

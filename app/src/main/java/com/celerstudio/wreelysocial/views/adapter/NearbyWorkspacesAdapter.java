@@ -78,16 +78,19 @@ public class NearbyWorkspacesAdapter extends RecyclerView.Adapter<NearbyWorkspac
     public void onBindViewHolder(DataObjectHolder holder, int position) {
         holder.setIsRecyclable(false);
         NearbyWorkspace item = mDataset.get(position);
-        Picasso.with(context).load(item.getImage()).into(holder.binding.pic);
 
-        float mp = Util.textIsEmpty(item.getMonthPrice()) ? 0 : Float.parseFloat(item.getMonthPrice());
-        if (mp <= 0) {
+        if (item.getId().equalsIgnoreCase("-420") || item.getId().equalsIgnoreCase("-421")) {
             holder.binding.monthPrice.setVisibility(View.GONE);
+            holder.binding.direction.setVisibility(View.GONE);
         } else {
-            holder.binding.monthPrice.setText(item.getCurrency() + " " + item.getMonthPrice() + "/Month");
+            Picasso.with(context).load(item.getImage()).into(holder.binding.pic);
+            float mp = Util.textIsEmpty(item.getMonthPrice()) ? 0 : Float.parseFloat(item.getMonthPrice());
+            if (mp <= 0) {
+                holder.binding.monthPrice.setVisibility(View.GONE);
+            } else {
+                holder.binding.monthPrice.setText(item.getCurrency() + " " + item.getMonthPrice() + "/Month");
+            }
         }
-
-
 
         holder.bind(item);
     }

@@ -148,20 +148,22 @@ public class GroupDetailActivity extends BaseActivity {
 
             }
         });
-
         initFetching();
-
     }
 
     private void fetchData() {
         items = new ArrayList<>();
         String token = vendor.getAccessToken();
         setProgressDialog(vendor.getName(), "Fetching members");
-        compositeSubscription.add(getAPIService().getVendorMembers(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
+        compositeSubscription.add(getAPIService().getVendorMembers(vendor.getId(), getApp().getUser().getAccessToken()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
             protected void onSuccess(Response<BasicResponse> response) {
                 items = response.body().getMembers();
                 itemsAdapter.addItems(items);
+                if (items.size() == 0) {
+                    internet.setVisibility(View.VISIBLE);
+                    internet.setText("Members not available");
+                }
             }
 
             @Override
@@ -199,7 +201,7 @@ public class GroupDetailActivity extends BaseActivity {
         TextView v = (TextView) view;
         if (v.getText().toString().toLowerCase().contains("settings")) {
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-        } else if (v.getText().toString().toLowerCase().contains("try again")) {
+        } else {
             internet.setVisibility(View.GONE);
             fetchData();
         }

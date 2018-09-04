@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.celerstudio.wreelysocial.models.Company;
 import com.celerstudio.wreelysocial.models.Member;
 import com.celerstudio.wreelysocial.models.RestError;
 import com.celerstudio.wreelysocial.models.Vendor;
+import com.celerstudio.wreelysocial.network.CallbackWrapper;
 import com.celerstudio.wreelysocial.util.UiUtils;
 import com.celerstudio.wreelysocial.util.Util;
 import com.celerstudio.wreelysocial.views.activity.MemberDetailActivity;
@@ -55,6 +57,7 @@ public class CompanyMembersFragment extends BaseFragment {
     Company company;
     Vendor vendor;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,24 +121,25 @@ public class CompanyMembersFragment extends BaseFragment {
 
     private void fetchData() {
         items = new ArrayList<>();
-        String token = vendor.getAccessToken();
-        compositeSubscription.add(getApp().getAPIService().getCompanyMembers(String.valueOf(company.getId()), token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Response<BasicResponse>>() {
+        String token = getApp().getUser().getAccessToken();
+        Log.d("CompanyMembersFragment", token);
+        compositeSubscription.add(getApp().getAPIService().getCompanyMembers(vendor.getId().toString(), company.getId().toString(), token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>() {
             @Override
-            public void call(Response<BasicResponse> response) {
-
-                if (response.isSuccessful()) {
-                    items = response.body().getMembers();
-                    itemsAdapter.addItems(items);
+            protected void onSuccess(Response<BasicResponse> response) {
+                items = response.body().getMembers();
+                itemsAdapter.addItems(items);
+                if (items.size() == 0) {
+                    internet.setVisibility(View.VISIBLE);
+                    internet.setText("Members not available");
                 } else {
-                    RestError restError = Util.handleError(response.errorBody());
-                    UiUtils.showSnackbar(getActivity().findViewById(android.R.id.content), restError.getMessage(), Snackbar.LENGTH_LONG);
+                    internet.setVisibility(View.GONE);
                 }
             }
-        }, new Action1<Throwable>() {
+
             @Override
-            public void call(Throwable throwable) {
+            protected void onFailure(String message) {
                 internet.setVisibility(View.VISIBLE);
-                internet.setText(getString(R.string.something_went_wrong));
+                internet.setText(message);
             }
         }));
     }
@@ -162,7 +166,7 @@ public class CompanyMembersFragment extends BaseFragment {
         TextView v = (TextView) view;
         if (v.getText().toString().toLowerCase().contains("settings")) {
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-        } else if (v.getText().toString().toLowerCase().contains("try again")) {
+        } else {
             internet.setVisibility(View.GONE);
             fetchData();
         }

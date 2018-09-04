@@ -87,7 +87,7 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
             vendor = getIntent().getParcelableExtra("vendor");
 
         if (friend.getName().equalsIgnoreCase("group chat")) {
-            databaseReference = getApp().getFirebaseDBRef("groupChat/" + chatRoomId());
+//            databaseReference = getApp().getFirebaseDBRef("groupChat/" + chatRoomId());
         }
 
         chatMessageAdapter = new ChatMessageAdapter(chatMessages, this);

@@ -68,7 +68,9 @@ public class VendorsDashboardActivity extends BaseActivity {
 
     @OnClick(R.id.events)
     void onMedicalNews(View view) {
-//        startActivity(new Intent(this, MedicalNewsActivity.class));
+        Intent intent = new Intent(this, VendorEventsActivity.class);
+        intent.putExtra("vendor", vendor);
+        startActivity(intent);
     }
 
     @OnClick(R.id.workspace)
@@ -82,6 +84,7 @@ public class VendorsDashboardActivity extends BaseActivity {
 //        startActivity(intent);
 
     }
+
 
     @OnClick(R.id.group_chat)
     void onCaseDiscussion(View view) {

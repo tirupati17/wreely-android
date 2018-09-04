@@ -82,6 +82,13 @@ public abstract class CallbackWrapper<T> implements Observer<T> {
                 onFailure(code + " Not Found");
             } else if (code == Constants.HTTPStatusCodes.SERVER_ERROR) {
                 onFailure(code + " Internal Server Error");
+            } else if (code == Constants.HTTPStatusCodes.UNAUTHORIZED) {
+                if (baseActivity != null)
+                    baseActivity.invalidSession();
+                else {
+                    RestError restError = handleError(br.errorBody());
+                    onFailure(restError.getMessage());
+                }
             } else {
                 RestError restError = handleError(br.errorBody());
                 onFailure(restError.getMessage());

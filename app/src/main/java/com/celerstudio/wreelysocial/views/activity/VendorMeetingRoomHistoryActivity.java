@@ -113,16 +113,17 @@ public class VendorMeetingRoomHistoryActivity extends BaseActivity {
 
     private void fetchData() {
         items = new ArrayList<>();
-        String token = vendor.getAccessToken();
+        String token = getApp().getUser().getAccessToken();
         setProgressDialog("Meeting Rooms", "Fetching meeting rooms history");
         internet.setVisibility(View.GONE);
-        compositeSubscription.add(getAPIService().meetingHistory(Long.parseLong(getApp().getUser().getId()), setDate()[0], setDate()[1], token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
+        compositeSubscription.add(getAPIService().meetingHistory(vendor.getId().toString(), setDate()[0], setDate()[1], token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
             protected void onSuccess(Response<BasicResponse> response) {
                 items = response.body().getMeetingRoomHistory();
                 if (items.size() == 0) {
                     internet.setVisibility(View.VISIBLE);
                     internet.setText("Meeting Rooms not available");
+                    totalCount.setText("0");
                 } else {
                     countCont.setVisibility(View.VISIBLE);
                     totalCount.setText(String.valueOf(items.size()));
@@ -161,7 +162,7 @@ public class VendorMeetingRoomHistoryActivity extends BaseActivity {
         TextView v = (TextView) view;
         if (v.getText().toString().toLowerCase().contains("settings")) {
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-        } else if (v.getText().toString().toLowerCase().contains("try again")) {
+        } else {
             internet.setVisibility(View.GONE);
             fetchData();
         }
@@ -215,13 +216,13 @@ public class VendorMeetingRoomHistoryActivity extends BaseActivity {
 
     @OnClick(R.id.name)
     void onName() {
-        DatePickerFragment.newInstance(new DatePickerFragment.DatePickerFragmentListener() {
-            @Override
-            public void onDateSet(String displayDate, Date date) {
-                String formattedDate = new SimpleDateFormat("MMM").format(date) + ", " + date.getYear();
-//                String formattedDate = new SimpleDateFormat("EEE, MMM d, ''yyyy").format(date);
-                name.setText(formattedDate);
-            }
-        }).show(getSupportFragmentManager(), "Select Date");
+//        DatePickerFragment.newInstance(new DatePickerFragment.DatePickerFragmentListener() {
+//            @Override
+//            public void onDateSet(String displayDate, Date date) {
+//                String formattedDate = new SimpleDateFormat("MMM, yyyy").format(date);
+////                String formattedDate = new SimpleDateFormat("EEE, MMM d, ''yyyy").format(date);
+//                name.setText(formattedDate);
+//            }
+//        }).show(getSupportFragmentManager(), "Select Date");
     }
 }

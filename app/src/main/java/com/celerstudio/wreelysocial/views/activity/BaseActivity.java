@@ -12,6 +12,7 @@ import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +38,7 @@ import com.celerstudio.wreelysocial.models.User;
 import com.celerstudio.wreelysocial.network.APIService;
 import com.celerstudio.wreelysocial.util.MixpanelEvents;
 import com.celerstudio.wreelysocial.util.UiUtils;
+import com.celerstudio.wreelysocial.views.CustomPopoverView;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import java.util.ArrayList;
@@ -166,6 +168,36 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
 
     public void dismissDialog() {
         mDialog.dismiss();
+    }
+
+    public void invalidSession() {
+        CustomPopoverView customPopoverView = CustomPopoverView.builder(this)
+                .withPositiveTitle("Logout")
+                .withTitle("Wreely")
+                .setCancelable(false)
+                .withMessage("Access Denied. Invalid session")
+                .setDialogButtonClickListener(new CustomPopoverView.DialogButtonClickListener() {
+                    @Override
+                    public void positiveButtonClicked(View view, AlertDialog alertDialog) {
+                        getApp().getPreferences().removeUserSession();
+                        Intent intent = new Intent(context, SplashActivity.class);
+                        finishAffinity();
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void negativeButtonClicked(View view, AlertDialog alertDialog) {
+
+                    }
+
+                    @Override
+                    public void neutralButtonClicked(View view, AlertDialog alertDialog) {
+
+                    }
+                })
+                .build();
+
+        customPopoverView.show();
     }
 
     public void setLayoutManager(RecyclerView recyclerView, int orientation) {

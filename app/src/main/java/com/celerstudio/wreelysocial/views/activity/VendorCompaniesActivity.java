@@ -18,6 +18,7 @@ import com.celerstudio.wreelysocial.models.Company;
 import com.celerstudio.wreelysocial.models.Member;
 import com.celerstudio.wreelysocial.models.RestError;
 import com.celerstudio.wreelysocial.models.Vendor;
+import com.celerstudio.wreelysocial.network.CallbackWrapper;
 import com.celerstudio.wreelysocial.util.UiUtils;
 import com.celerstudio.wreelysocial.util.Util;
 import com.celerstudio.wreelysocial.views.adapter.CompanyAdapter;
@@ -90,27 +91,22 @@ public class VendorCompaniesActivity extends BaseActivity {
 
     private void fetchData() {
         items = new ArrayList<>();
-        String token = vendor.getAccessToken();
         setProgressDialog(vendor.getName(), "Fetching companies");
-        compositeSubscription.add(getAPIService().getCompanies(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Response<BasicResponse>>() {
+        compositeSubscription.add(getAPIService().getCompanies(vendor.getId(), getApp().getUser().getAccessToken()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
-            public void call(Response<BasicResponse> response) {
-                dismissDialog();
-                if (response.isSuccessful()) {
-                    items = response.body().getCompanies();
-                    itemsAdapter.addItems(items);
-                } else {
-                    RestError restError = Util.handleError(response.errorBody());
-                    UiUtils.showSnackbar(findViewById(android.R.id.content), restError.getMessage(), Snackbar.LENGTH_LONG);
+            protected void onSuccess(Response<BasicResponse> response) {
+                items = response.body().getCompanies();
+                itemsAdapter.addItems(items);
+                if (items.size() == 0) {
+                    internet.setVisibility(View.VISIBLE);
+                    internet.setText("Companies not available");
                 }
             }
-        }, new Action1<Throwable>() {
+
             @Override
-            public void call(Throwable throwable) {
-                dismissDialog();
+            protected void onFailure(String message) {
                 internet.setVisibility(View.VISIBLE);
-                internet.setText(getString(R.string.something_went_wrong));
-//                UiUtils.showSnackbar(findViewById(android.R.id.content), throwable.getMessage(), Snackbar.LENGTH_LONG);
+                internet.setText(message);
             }
         }));
     }
@@ -160,7 +156,7 @@ public class VendorCompaniesActivity extends BaseActivity {
         TextView v = (TextView) view;
         if (v.getText().toString().toLowerCase().contains("settings")) {
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-        } else if (v.getText().toString().toLowerCase().contains("try again")) {
+        } else {
             internet.setVisibility(View.GONE);
             fetchData();
         }

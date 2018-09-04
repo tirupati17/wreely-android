@@ -2,6 +2,8 @@ package com.celerstudio.wreelysocial.views.activity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +41,12 @@ public class MemberDetailActivity extends BaseActivity {
     ImageView logo;
 
     private Member member;
+
+    @BindView(R.id.appbar)
+    AppBarLayout appbar;
+
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +99,18 @@ public class MemberDetailActivity extends BaseActivity {
                     .buildRound("N", color1);
         }
         logo.setImageDrawable(drawable);
+
+        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (Math.abs(verticalOffset) - appBarLayout.getTotalScrollRange() == 0) {
+                    toolbar.setTitle(member.getName());
+                } else {
+                    toolbar.setTitle("");
+                    collapsingToolbar.setTitle("");
+                }
+            }
+        });
     }
 
     private String getEncryptedString(String str) {
@@ -98,7 +118,7 @@ public class MemberDetailActivity extends BaseActivity {
         for (int i = 0; i < str.length(); i++) {
             String j = String.valueOf(str.charAt(i));
             if (i > 1 && i < str.length() - 1) {
-                sb.append("x");
+                sb.append("*");
             } else {
                 sb.append(j);
             }

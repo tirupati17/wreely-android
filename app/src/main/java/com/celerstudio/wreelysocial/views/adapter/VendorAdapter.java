@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,13 +30,16 @@ public class VendorAdapter extends RecyclerView.Adapter<VendorAdapter.DataObject
         TextView name;
         ImageView logo;
         LinearLayout selector;
+        CheckBox check;
 
         public DataObjectHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
             logo = (ImageView) itemView.findViewById(R.id.logo);
+            check = (CheckBox) itemView.findViewById(R.id.check);
             selector = (LinearLayout) itemView.findViewById(R.id.selector);
             selector.setOnClickListener(this);
+            check.setOnClickListener(this);
         }
 
         @Override
@@ -72,9 +76,10 @@ public class VendorAdapter extends RecyclerView.Adapter<VendorAdapter.DataObject
         if (!Util.textIsEmpty(item.getVendorLogoUrl())) {
             Picasso.with(context).load(item.getVendorLogoUrl()).into(holder.logo);
         }
+        holder.check.setChecked(item.isDefaultWorkspace());
+        holder.check.setTag(item);
         holder.selector.setTag(item);
     }
-
 
     public void deleteItem(int index) {
         mDataset.remove(index);
@@ -82,12 +87,7 @@ public class VendorAdapter extends RecyclerView.Adapter<VendorAdapter.DataObject
     }
 
     public void addItems(List<Vendor> items) {
-        Vendor nearbyItem = new Vendor();
-        nearbyItem.setName("Nearby Workspaces");
-        nearbyItem.setVendorLogoUrl(null);
-        items.add(nearbyItem);
         this.mDataset = items;
-        this.mDataset.add(0, nearbyItem);
         notifyDataSetChanged();
     }
 

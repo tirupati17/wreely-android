@@ -78,6 +78,7 @@ public class WorkSpaceLocationActivity extends BaseActivity implements OnMapRead
                 mUiSettings.setZoomGesturesEnabled(true);
                 mUiSettings.setTiltGesturesEnabled(true);
                 mUiSettings.setRotateGesturesEnabled(true);
+                mUiSettings.setMapToolbarEnabled(true);
 
                 if (ActivityCompat.checkSelfPermission(WorkSpaceLocationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(WorkSpaceLocationActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;

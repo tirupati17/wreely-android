@@ -22,11 +22,11 @@ import java.util.Map;
 public class DetailSharedElementEnterCallback extends SharedElementCallback {
 
     private final Intent intent;
-    private float targetTextSize;
-    private ColorStateList targetTextColors;
+    //    private float targetTextSize;
+//    private ColorStateList targetTextColors;
     private NearbyWorkspaceDetailBinding nearbyWorkspaceDetailBinding;
     private ItemNearbyWorkspaceBinding itemNearbyWorkspaceBinding;
-    private Rect targetPadding;
+    private Rect authorPadding, cityPadding;
 
     public DetailSharedElementEnterCallback(Intent intent) {
         this.intent = intent;
@@ -37,19 +37,27 @@ public class DetailSharedElementEnterCallback extends SharedElementCallback {
                                      List<View> sharedElements,
                                      List<View> sharedElementSnapshots) {
         TextView author = getAuthor();
-        targetTextSize = author.getTextSize();
-        targetTextColors = author.getTextColors();
-        targetPadding = new Rect(author.getPaddingLeft(),
+        TextView city = getCity();
+        authorPadding = new Rect(author.getPaddingLeft(),
                 author.getPaddingTop(),
                 author.getPaddingRight(),
                 author.getPaddingBottom());
+
+        cityPadding = new Rect(city.getPaddingLeft(),
+                city.getPaddingTop(),
+                city.getPaddingRight(),
+                city.getPaddingBottom());
         if (IntentUtil.hasAll(intent,
                 IntentUtil.TEXT_COLOR, IntentUtil.FONT_SIZE, IntentUtil.PADDING)) {
             author.setTextColor(intent.getIntExtra(IntentUtil.TEXT_COLOR, Color.BLACK));
-            float textSize = intent.getFloatExtra(IntentUtil.FONT_SIZE, targetTextSize);
-            author.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            city.setTextColor(intent.getIntExtra(IntentUtil.TEXT_COLOR, Color.BLACK));
+            float authorSize = intent.getFloatExtra(IntentUtil.FONT_SIZE, author.getTextSize());
+            float citySize = intent.getFloatExtra(IntentUtil.FONT_SIZE, city.getTextSize());
+            author.setTextSize(TypedValue.COMPLEX_UNIT_PX, authorSize);
+            city.setTextSize(TypedValue.COMPLEX_UNIT_PX, citySize);
             Rect padding = intent.getParcelableExtra(IntentUtil.PADDING);
             author.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+            city.setPadding(padding.left, padding.top, padding.right, padding.bottom);
         }
     }
 
@@ -58,13 +66,25 @@ public class DetailSharedElementEnterCallback extends SharedElementCallback {
                                    List<View> sharedElements,
                                    List<View> sharedElementSnapshots) {
         TextView author = getAuthor();
-        author.setTextSize(TypedValue.COMPLEX_UNIT_PX, targetTextSize);
-        if (targetTextColors != null) {
-            author.setTextColor(targetTextColors);
+        TextView city = getCity();
+        author.setTextSize(TypedValue.COMPLEX_UNIT_PX, author.getTextSize());
+        city.setTextSize(TypedValue.COMPLEX_UNIT_PX, city.getTextSize());
+        if (author.getTextColors() != null) {
+            author.setTextColor(author.getTextColors());
         }
-        if (targetPadding != null) {
-            author.setPadding(targetPadding.left, targetPadding.top,
-                    targetPadding.right, targetPadding.bottom);
+
+        if (city.getTextColors() != null) {
+            city.setTextColor(city.getTextColors());
+        }
+
+        if (authorPadding != null) {
+            author.setPadding(authorPadding.left, authorPadding.top,
+                    authorPadding.right, authorPadding.bottom);
+        }
+
+        if (cityPadding != null) {
+            author.setPadding(cityPadding.left, cityPadding.top,
+                    cityPadding.right, cityPadding.bottom);
         }
 //        if (currentDetailBinding != null) {
 //            forceSharedElementLayout(currentDetailBinding.city);
@@ -75,6 +95,7 @@ public class DetailSharedElementEnterCallback extends SharedElementCallback {
     public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
         removeObsoleteElements(names, sharedElements, mapObsoleteElements(names));
         mapSharedElement(names, sharedElements, getAuthor());
+        mapSharedElement(names, sharedElements, getCity());
         mapSharedElement(names, sharedElements, getPhoto());
     }
 
@@ -93,6 +114,16 @@ public class DetailSharedElementEnterCallback extends SharedElementCallback {
             return itemNearbyWorkspaceBinding.title;
         } else if (nearbyWorkspaceDetailBinding != null) {
             return nearbyWorkspaceDetailBinding.title;
+        } else {
+            throw new NullPointerException("Must set a binding before transitioning.");
+        }
+    }
+
+    private TextView getCity() {
+        if (itemNearbyWorkspaceBinding != null) {
+            return itemNearbyWorkspaceBinding.city;
+        } else if (nearbyWorkspaceDetailBinding != null) {
+            return nearbyWorkspaceDetailBinding.city;
         } else {
             throw new NullPointerException("Must set a binding before transitioning.");
         }
@@ -127,8 +158,8 @@ public class DetailSharedElementEnterCallback extends SharedElementCallback {
     /**
      * Removes obsolete elements from names and shared elements.
      *
-     * @param names Shared element names.
-     * @param sharedElements Shared elements.
+     * @param names            Shared element names.
+     * @param sharedElements   Shared elements.
      * @param elementsToRemove The elements that should be removed.
      */
     private void removeObsoleteElements(List<String> names,
@@ -145,9 +176,9 @@ public class DetailSharedElementEnterCallback extends SharedElementCallback {
     /**
      * Puts a shared element to transitions and names.
      *
-     * @param names The names for this transition.
+     * @param names          The names for this transition.
      * @param sharedElements The elements for this transition.
-     * @param view The view to add.
+     * @param view           The view to add.
      */
     private void mapSharedElement(List<String> names, Map<String, View> sharedElements, View view) {
         String transitionName = view.getTransitionName();

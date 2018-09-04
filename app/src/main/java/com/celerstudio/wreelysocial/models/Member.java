@@ -3,15 +3,22 @@ package com.celerstudio.wreelysocial.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Member implements Parcelable {
 
     private Long id;
     private String name;
+    @SerializedName("contact_no")
     private String contactNo;
     private String occupation;
-    private String membershipTypeId;
+    @SerializedName("membership_type_id")
+    private Long membershipTypeId = -1l;
+    @SerializedName("email_id")
     private String emailId;
     private String flexiCount;
+    @SerializedName("profile_image")
+    private String profileImage;
 
     public Member() {
     }
@@ -48,11 +55,11 @@ public class Member implements Parcelable {
         this.occupation = occupation;
     }
 
-    public String getMembershipTypeId() {
+    public Long getMembershipTypeId() {
         return membershipTypeId;
     }
 
-    public void setMembershipTypeId(String membershipTypeId) {
+    public void setMembershipTypeId(Long membershipTypeId) {
         this.membershipTypeId = membershipTypeId;
     }
 
@@ -72,6 +79,14 @@ public class Member implements Parcelable {
         this.flexiCount = flexiCount;
     }
 
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -83,9 +98,10 @@ public class Member implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.contactNo);
         dest.writeString(this.occupation);
-        dest.writeString(this.membershipTypeId);
+        dest.writeLong(this.membershipTypeId);
         dest.writeString(this.emailId);
         dest.writeString(this.flexiCount);
+        dest.writeString(this.profileImage);
     }
 
     protected Member(Parcel in) {
@@ -93,9 +109,10 @@ public class Member implements Parcelable {
         this.name = in.readString();
         this.contactNo = in.readString();
         this.occupation = in.readString();
-        this.membershipTypeId = in.readString();
+        this.membershipTypeId = in.readLong();
         this.emailId = in.readString();
         this.flexiCount = in.readString();
+        this.profileImage = in.readString();
     }
 
     public static final Creator<Member> CREATOR = new Creator<Member>() {

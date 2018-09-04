@@ -70,7 +70,12 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.DataObject
     public void onBindViewHolder(DataObjectHolder holder, int position) {
         holder.setIsRecyclable(false);
         Member item = mDataset.get(position);
-        holder.occupation.setText(item.getOccupation());
+        if (!Util.textIsEmpty(item.getOccupation())) {
+            holder.occupation.setText(item.getOccupation());
+        } else {
+            holder.occupation.setText("Designation Not Available");
+        }
+
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
 // generate random color

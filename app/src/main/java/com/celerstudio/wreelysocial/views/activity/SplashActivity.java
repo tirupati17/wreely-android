@@ -52,9 +52,6 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void navigate() {
-
-//        startActivity(new Intent(this, NearbyWorkspacesActivity.class));
-
         if (getApp().getPreferences().isUserLoggedIn()) {
             startActivity(new Intent(SplashActivity.this, VendorsActivity.class));
         } else {

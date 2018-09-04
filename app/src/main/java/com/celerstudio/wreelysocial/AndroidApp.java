@@ -37,13 +37,13 @@ public class AndroidApp extends Application implements ConnectivityReceiverListe
     private ConnectivityReceiverListener connectivityReceiverListener;
     public static final String MIXPANEL_TOKEN = "3f6651d5c7ffd264fb50afe9fc595403";
     private MixpanelAPI mixpanel;
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference myRef;
+//    private FirebaseDatabase firebaseDatabase;
+//    private DatabaseReference myRef;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        this.firebaseDatabase = FirebaseDatabase.getInstance();
+//        this.firebaseDatabase = FirebaseDatabase.getInstance();
         Stetho.initializeWithDefaults(this);
         preferenceUtils = new PreferenceUtils(this);
         apiService = APIClient.getAdapterApiService();
@@ -105,7 +105,8 @@ public class AndroidApp extends Application implements ConnectivityReceiverListe
     }
 
     public DatabaseReference getFirebaseDBRef(String table) {
-        return myRef = firebaseDatabase.getReference().child(table);
+//        return myRef = firebaseDatabase.getReference().child(table);
+        return null;
     }
 
     private class NotificationReceivedHandler implements OneSignal.NotificationReceivedHandler {
@@ -183,7 +184,7 @@ public class AndroidApp extends Application implements ConnectivityReceiverListe
             // startActivity(intent);
             startActivity(intent);
 
-            // Add the following to your AndroidManifest.xml to prevent the launching of your main Activity
+            // Add the following to your AndroidManifest.xml to prevent the launching of your vendors Activity
             //   if you are calling startActivity above.
         /*
            <application ...>

@@ -119,4 +119,6 @@ available, branch PA valve implantation remains an option for select patients.</
     <string name="title_activity_work_space_location">Workspace Location</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCe5WeG-SFcS1extiAEzd7fKuU9Rd7odSc</string>
     <string name="Rs">\u20B9</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

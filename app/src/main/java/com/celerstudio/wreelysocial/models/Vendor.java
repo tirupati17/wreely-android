@@ -11,14 +11,17 @@ public class Vendor implements Parcelable {
 
     private String firebaseId;
     private String accessToken;
+    @SerializedName("email_id")
     private String email;
     private String mobile;
     private String name;
+    @SerializedName("vendor_logo_url")
     private String vendorLogoUrl;
     private String domainNameReference;
     private List<String> companies;
     private List<String> members;
-    private String id;
+    private Long id;
+    private boolean defaultWorkspace;
 
     public Vendor() {
     }
@@ -95,12 +98,20 @@ public class Vendor implements Parcelable {
         this.members = members;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean isDefaultWorkspace() {
+        return defaultWorkspace;
+    }
+
+    public void setDefaultWorkspace(boolean defaultWorkspace) {
+        this.defaultWorkspace = defaultWorkspace;
     }
 
     @Override
@@ -119,7 +130,8 @@ public class Vendor implements Parcelable {
         dest.writeString(this.domainNameReference);
         dest.writeStringList(this.companies);
         dest.writeStringList(this.members);
-        dest.writeString(this.id);
+        dest.writeValue(this.id);
+        dest.writeByte(this.defaultWorkspace ? (byte) 1 : (byte) 0);
     }
 
     protected Vendor(Parcel in) {
@@ -132,7 +144,8 @@ public class Vendor implements Parcelable {
         this.domainNameReference = in.readString();
         this.companies = in.createStringArrayList();
         this.members = in.createStringArrayList();
-        this.id = in.readString();
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.defaultWorkspace = in.readByte() != 0;
     }
 
     public static final Creator<Vendor> CREATOR = new Creator<Vendor>() {

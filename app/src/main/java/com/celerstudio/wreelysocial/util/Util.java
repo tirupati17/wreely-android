@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Base64;
 
 import com.celerstudio.wreelysocial.models.MeetingRoom;
@@ -24,6 +25,7 @@ import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -139,6 +141,43 @@ public class Util {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static String getEventTimeDuration(String sd, String ed) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = null;
+        try {
+            Date startDate = dateFormat.parse(sd);
+            Date endDate = dateFormat.parse(ed);
+            String startTime = new SimpleDateFormat("h:mm a, d MMM yyyy").format(startDate);
+            String endTime = new SimpleDateFormat("h:mm a, d MMM yyyy").format(endDate);
+            if (isEventOfSameDay(startDate, endDate)) {
+                startTime = new SimpleDateFormat("h:mm a").format(startDate);
+                endTime = new SimpleDateFormat("h:mm a").format(endDate);
+                String day = new SimpleDateFormat("d MMM yyyy").format(endDate);
+                time = startTime + " - " + endTime + ", " + day;
+            } else {
+                time = startTime + " - " + endTime;
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return time;
+    }
+
+    public static boolean isEventOfSameDay(Date startDate, Date endDate) {
+        boolean sameDay = false;
+        Calendar sC = Calendar.getInstance();
+        sC.setTime(startDate);
+        Calendar eC = Calendar.getInstance();
+        eC.setTime(endDate);
+        boolean sameYear = sC.get(Calendar.YEAR) == eC.get(Calendar.YEAR);
+        boolean sameMonth = sC.get(Calendar.MONTH) == eC.get(Calendar.MONTH);
+        boolean sDay = sC.get(Calendar.DAY_OF_MONTH) == eC.get(Calendar.DAY_OF_MONTH);
+        if (sameYear && sameMonth && sDay)
+            sameDay = true;
+        return sameDay;
     }
 
     public static boolean isMeetingTimeExpired(MeetingRoomSlot slot) {
