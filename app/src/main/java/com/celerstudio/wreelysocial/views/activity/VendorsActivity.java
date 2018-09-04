@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.celerstudio.wreelysocial.BuildConfig;
 import com.celerstudio.wreelysocial.ConnectivityReceiver;
 import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.VerticalSpaceItemDecoration;
@@ -69,6 +70,9 @@ public class VendorsActivity extends BaseActivity {
 
     @BindView(R.id.vendors_cont)
     LinearLayout vendorsCont;
+
+    @BindView(R.id.app_info)
+    TextView appInfo;
 
     @BindView(R.id.vendor_dashboard)
     ScrollView vendorDashboard;
@@ -134,6 +138,10 @@ public class VendorsActivity extends BaseActivity {
 
         selectedVendor = getApp().getPreferences().getVendor();
         setVendorView();
+
+        String info = "App Info\nVersion Code - " + BuildConfig.VERSION_CODE + ", Version Name - " + BuildConfig.VERSION_NAME;
+        appInfo.setText(info);
+
     }
 
     private void setVendorView() {

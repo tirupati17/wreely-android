@@ -30,13 +30,13 @@ import com.celerstudio.wreelysocial.persistence.WreelyDataViewModel;
 import com.celerstudio.wreelysocial.util.Util;
 import com.celerstudio.wreelysocial.viewModel.SkyAppDataViewModel;
 import com.celerstudio.wreelysocial.views.adapter.ChatMessageAdapter;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.ChildEventListener;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.Query;
+//import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.xw.repo.XEditText;
 
@@ -69,10 +69,10 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
 
     private WreelyDataViewModel skyAppDataViewModel;
     private ChatMessageAdapter chatMessageAdapter;
-    private DatabaseReference databaseReference;
-    private Query getDataQuery;
-    private ValueEventListener getChatValueEventListener;
-    private ChildEventListener listenForChatChildEventListener;
+//    private DatabaseReference databaseReference;
+//    private Query getDataQuery;
+//    private ValueEventListener getChatValueEventListener;
+//    private ChildEventListener listenForChatChildEventListener;
     List<ChatMessage> chatMessages = new ArrayList<>();
 
     @Override
@@ -176,7 +176,7 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
     @OnClick(R.id.send)
     void onSend() {
         if (!Util.textIsEmpty(message.getText().toString())) {
-            DatabaseReference db = databaseReference.push();
+//            DatabaseReference db = databaseReference.push();
             Chat chat = new Chat();
             chat.setMessage(message.getText().toString());
             chat.setSenderId(user.getAccessToken());
@@ -186,27 +186,27 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
             chat.setRoomId(chatRoomId());
             //DatabaseUtils.saveChatMessage(this, Chat.copy(chat));
             message.setText("");
-            db.setValue(chat);
+//            db.setValue(chat);
         }
     }
 
     private void fetchData() {
-        getChatValueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null)
-                    collectChats((Map<String, Object>) dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("databaseError", databaseError.getMessage());
-            }
-        };
-
-//        chatHomeActivity.showDialog("Friends", "Wait while we get your friends");
-        getDataQuery = databaseReference.limitToFirst(100);
-        getDataQuery.addListenerForSingleValueEvent(getChatValueEventListener);
+//        getChatValueEventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.getValue() != null)
+//                    collectChats((Map<String, Object>) dataSnapshot.getValue());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.d("databaseError", databaseError.getMessage());
+//            }
+//        };
+//
+////        chatHomeActivity.showDialog("Friends", "Wait while we get your friends");
+//        getDataQuery = databaseReference.limitToFirst(100);
+//        getDataQuery.addListenerForSingleValueEvent(getChatValueEventListener);
     }
 
     private void collectChats(Map<String, Object> values) {
@@ -220,40 +220,40 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
     }
 
     private void listenForIncomingMessage() {
-        listenForChatChildEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (dataSnapshot.getValue() != null) {
-                    HashMap mapMessage = (HashMap) dataSnapshot.getValue();
-                    Chat newMessage = Chat.map(user.getAccessToken(), mapMessage);
-                    ChatMessage chatMessage = Chat.cloneToChatMessage(newMessage);
-                    Log.d("chatMessage", new Gson().toJson(chatMessage));
-                    chatMessageAdapter.add(chatMessage);
-                    recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        databaseReference.addChildEventListener(listenForChatChildEventListener);
+//        listenForChatChildEventListener = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                if (dataSnapshot.getValue() != null) {
+//                    HashMap mapMessage = (HashMap) dataSnapshot.getValue();
+//                    Chat newMessage = Chat.map(user.getAccessToken(), mapMessage);
+//                    ChatMessage chatMessage = Chat.cloneToChatMessage(newMessage);
+//                    Log.d("chatMessage", new Gson().toJson(chatMessage));
+//                    chatMessageAdapter.add(chatMessage);
+//                    recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+//                }
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+//        databaseReference.addChildEventListener(listenForChatChildEventListener);
     }
 
     private String chatRoomId() {
@@ -294,12 +294,12 @@ public class ChatActivity extends BaseActivity implements BaseActivity.OptionMen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (getDataQuery != null && getChatValueEventListener != null) {
-            getDataQuery.removeEventListener(getChatValueEventListener);
-        }
-
-        if (databaseReference != null && listenForChatChildEventListener != null) {
-            databaseReference.removeEventListener(listenForChatChildEventListener);
-        }
+//        if (getDataQuery != null && getChatValueEventListener != null) {
+//            getDataQuery.removeEventListener(getChatValueEventListener);
+//        }
+//
+//        if (databaseReference != null && listenForChatChildEventListener != null) {
+//            databaseReference.removeEventListener(listenForChatChildEventListener);
+//        }
     }
 }

@@ -47,11 +47,8 @@
         </provider>
 
         <meta-data
-            android:name="com.onesignal.BadgeCount"
-            android:value="ENABLE" />
-        <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="e50ba22faa93a6114e5977a2daee28eb787a15b8" />
+            android:value="e1894d7d7a7c2e9f87d4f79a03a31813e873a4a8" />
 
         <activity
             android:name=".views.activity.LoginActivity"
@@ -142,14 +139,6 @@
         <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> -->
         <!-- </intent-filter> -->
         <!-- </receiver> -->
-        <service
-            android:name=".network.NotificationExtender"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-            <intent-filter>
-                <action android:name="com.onesignal.NotificationExtender" />
-            </intent-filter>
-        </service>
 
         <receiver android:name=".assist.SMSReceiver" />
 

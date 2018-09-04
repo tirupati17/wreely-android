@@ -17,7 +17,7 @@ import com.celerstudio.wreelysocial.util.UiUtils;
 import com.celerstudio.wreelysocial.util.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,16 +75,16 @@ public class ForgotPasswordActivity extends BaseActivity {
 
     private void emailRequest() {
         setProgressDialog("Forgot Password", "Send you an email to reset password");
-        FirebaseAuth.getInstance().sendPasswordResetEmail(etEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                dismissDialog();
-                if (task.isSuccessful())
-                    UiUtils.showSnackbar(findViewById(android.R.id.content), "Reset link sent to your email", Snackbar.LENGTH_LONG);
-                else
-                    UiUtils.showSnackbar(findViewById(android.R.id.content), "Email Not found", Snackbar.LENGTH_LONG);
-            }
-        });
+//        FirebaseAuth.getInstance().sendPasswordResetEmail(etEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                dismissDialog();
+//                if (task.isSuccessful())
+//                    UiUtils.showSnackbar(findViewById(android.R.id.content), "Reset link sent to your email", Snackbar.LENGTH_LONG);
+//                else
+//                    UiUtils.showSnackbar(findViewById(android.R.id.content), "Email Not found", Snackbar.LENGTH_LONG);
+//            }
+//        });
     }
 
     @OnClick(R.id.login)

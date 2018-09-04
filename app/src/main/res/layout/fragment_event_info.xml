@@ -64,8 +64,7 @@
             android:background="@drawable/btn_primary"
             android:text="Interested"
             android:textColor="@color/white" />
-
-
+        
     </LinearLayout>
 
 

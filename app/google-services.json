@@ -1,0 +1,116 @@
+{
+  "project_info": {
+    "project_number": "244434374526",
+    "firebase_url": "https://wreely-819a2.firebaseio.com",
+    "project_id": "wreely-819a2",
+    "storage_bucket": "wreely-819a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244434374526:android:d80230ab467e7458",
+        "android_client_info": {
+          "package_name": "com.celerstudio.wreelysocial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244434374526-omkqfc0ubumqf0fbobkhc6slpfv7a0bm.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "244434374526-omkqfc0ubumqf0fbobkhc6slpfv7a0bm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe5WeG-SFcS1extiAEzd7fKuU9Rd7odSc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244434374526:android:96e02408b4b6ca3f",
+        "android_client_info": {
+          "package_name": "com.celerstudio.wreelysocial.localhost"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244434374526-omkqfc0ubumqf0fbobkhc6slpfv7a0bm.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "244434374526-omkqfc0ubumqf0fbobkhc6slpfv7a0bm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe5WeG-SFcS1extiAEzd7fKuU9Rd7odSc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244434374526:android:0c08da822dd2beaf",
+        "android_client_info": {
+          "package_name": "com.celerstudio.wreelysocial.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244434374526-omkqfc0ubumqf0fbobkhc6slpfv7a0bm.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "244434374526-omkqfc0ubumqf0fbobkhc6slpfv7a0bm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe5WeG-SFcS1extiAEzd7fKuU9Rd7odSc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
