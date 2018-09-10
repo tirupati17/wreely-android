@@ -81,7 +81,7 @@ public class MemberDetailActivity extends BaseActivity {
         phone.setText(Util.textIsEmpty(member.getContactNo()) ? "Not Available" : member.getContactNo());
         if (!user.getEmail().equalsIgnoreCase(member.getEmailId())) {
             email.setText(Util.textIsEmpty(member.getEmailId()) ? "Not Available" : getEncryptedString(member.getEmailId()));
-            phone.setText(Util.textIsEmpty(member.getContactNo()) ? "Not Available" : getEncryptedString(member.getContactNo()));
+//            phone.setText(Util.textIsEmpty(member.getContactNo()) ? "Not Available" : getEncryptedString(member.getContactNo()));
         }
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT

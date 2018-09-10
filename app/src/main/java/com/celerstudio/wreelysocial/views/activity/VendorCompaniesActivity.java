@@ -49,6 +49,7 @@ public class VendorCompaniesActivity extends BaseActivity {
     Vendor vendor;
 
     List<Company> items = new ArrayList<>();
+    List<Company> originalItems = new ArrayList<>();
     private CompositeSubscription compositeSubscription;
     private CompanyAdapter itemsAdapter;
 
@@ -65,7 +66,7 @@ public class VendorCompaniesActivity extends BaseActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        itemsAdapter = new CompanyAdapter(items, this);
+        itemsAdapter = new CompanyAdapter(originalItems, this);
         recyclerView.setAdapter(itemsAdapter);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(32, true));
         itemsAdapter.setOnItemClickListener(new CompanyAdapter.MyClickListener() {
@@ -91,11 +92,13 @@ public class VendorCompaniesActivity extends BaseActivity {
 
     private void fetchData() {
         items = new ArrayList<>();
+        originalItems = new ArrayList<>();
         setProgressDialog(vendor.getName(), "Fetching companies");
         compositeSubscription.add(getAPIService().getCompanies(vendor.getId(), getApp().getUser().getAccessToken()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>(this) {
             @Override
             protected void onSuccess(Response<BasicResponse> response) {
-                items = response.body().getCompanies();
+                originalItems = response.body().getCompanies();
+                items = originalItems;
                 itemsAdapter.addItems(items);
                 if (items.size() == 0) {
                     internet.setVisibility(View.VISIBLE);
@@ -133,21 +136,22 @@ public class VendorCompaniesActivity extends BaseActivity {
         internet.setVisibility(View.GONE);
         internet.setText(getString(R.string.network_not_available));
         String searchStr = search.getText().toString();
-        List<Company> searchedItems = new ArrayList<>();
         if (Util.textIsEmpty(searchStr)) {
+            items = originalItems;
             itemsAdapter.addItems(items);
         } else {
-            for (Company company : items) {
+            items = new ArrayList<>();
+            for (Company company : originalItems) {
                 if (company.getName().toLowerCase().contains(searchStr.toLowerCase()) || company.getContactPersonName().toLowerCase().contains(searchStr.toLowerCase())) {
-                    searchedItems.add(company);
+                    items.add(company);
                 }
             }
 
-            if (searchedItems.size() == 0) {
+            if (items.size() == 0) {
                 internet.setText("No results found for '" + searchStr + "'");
                 internet.setVisibility(View.VISIBLE);
             }
-            itemsAdapter.addItems(searchedItems);
+            itemsAdapter.addItems(items);
         }
     }
 
