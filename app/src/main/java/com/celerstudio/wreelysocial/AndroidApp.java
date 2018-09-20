@@ -3,8 +3,10 @@ package com.celerstudio.wreelysocial;
 import android.app.Application;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.support.multidex.MultiDex;
 
+import com.celerstudio.wreelysocial.util.Util;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.celerstudio.wreelysocial.models.User;
@@ -34,6 +36,7 @@ public class AndroidApp extends Application implements ConnectivityReceiverListe
         super.onCreate();
         MultiDex.install(this);
 //        this.firebaseDatabase = FirebaseDatabase.getInstance();
+        Fabric.with(this, new Crashlytics());
         Stetho.initializeWithDefaults(this);
         preferenceUtils = new PreferenceUtils(this);
         apiService = APIClient.getAdapterApiService();
@@ -45,7 +48,6 @@ public class AndroidApp extends Application implements ConnectivityReceiverListe
         Stetho.initializeWithDefaults(this);
         mixpanel =
                 MixpanelAPI.getInstance(this, MIXPANEL_TOKEN);
-        Fabric.with(this, new Crashlytics());
 
     }
 
@@ -71,6 +73,14 @@ public class AndroidApp extends Application implements ConnectivityReceiverListe
 
     public void setUser() {
         user = getPreferences().getUser();
+        if (user != null) {
+            Crashlytics.setUserEmail(user.getEmail());
+            Crashlytics.setUserName(user.getName());
+            Crashlytics.setUserIdentifier(user.getId());
+        } else {
+            Crashlytics.setUserName(Build.MANUFACTURER + ", " + Build.BRAND);
+            Crashlytics.setUserIdentifier(Util.uniqueDeviceID(this));
+        }
     }
 
     @Override

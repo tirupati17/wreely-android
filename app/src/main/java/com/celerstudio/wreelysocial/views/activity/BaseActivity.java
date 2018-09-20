@@ -21,6 +21,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
@@ -112,7 +113,16 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
         mDialog.setCancelable(false);
         mDialog.setTitle(title);
         mDialog.setMessage(body);
-        mDialog.show();
+
+        if (((Activity) context).isFinishing()) {
+            return;
+        }
+
+        try {
+            mDialog.show();
+        } catch (WindowManager.BadTokenException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setOptionMenu(int menu, OptionMenuListener listener) {

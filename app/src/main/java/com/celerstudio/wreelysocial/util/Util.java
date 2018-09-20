@@ -1,9 +1,12 @@
 package com.celerstudio.wreelysocial.util;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Base64;
@@ -27,6 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.ResponseBody;
@@ -116,6 +120,63 @@ public class Util {
         }
         return hexString;
     }
+
+    public static String uniqueDeviceID(Context context) {
+
+
+        UUID deviceUuid;
+        String tmDevice = "", tmSerial = "", androidId = "";
+        String deviceIdStr = "";
+
+        TelephonyManager telephonyManager = null;
+
+        PackageManager packageManager = context.getPackageManager();
+
+        int hasPhoneStatePerm = packageManager.checkPermission(Manifest.permission.READ_PHONE_STATE, context.getPackageName());
+        if (hasPhoneStatePerm == PackageManager.PERMISSION_GRANTED) {
+            telephonyManager = (TelephonyManager) context
+                    .getSystemService(Context.TELEPHONY_SERVICE);
+        }
+
+        try {
+            if (telephonyManager != null) {
+                tmDevice = "" + telephonyManager.getDeviceId();
+                tmSerial = "" + telephonyManager.getSimSerialNumber();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        androidId = Settings.Secure.getString(
+                context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        if (androidId == null) {
+            androidId = "";
+        }
+
+
+        String build = "";
+        if (android.os.Build.SERIAL != null) {
+            build = android.os.Build.SERIAL;
+        }
+
+        try {
+            if (!tmDevice.equalsIgnoreCase("") && !tmSerial.equalsIgnoreCase("")) {
+                deviceUuid = new UUID(androidId.hashCode(),
+                        ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+                deviceIdStr = deviceUuid.toString();
+            } else {
+                deviceUuid = new UUID(androidId.hashCode(), build.hashCode());
+                deviceIdStr = deviceUuid.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return deviceIdStr;
+    }
+
 
     public static String byte2HexFormatted(byte[] arr) {
         StringBuilder str = new StringBuilder(arr.length * 2);

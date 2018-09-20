@@ -106,7 +106,7 @@ public class LoginActivity extends BaseActivity {
             }
         });
         registerReceiver(smsReceiver, new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
-
+//        throw new RuntimeException("This is a sample crash");
     }
 
     @Override
