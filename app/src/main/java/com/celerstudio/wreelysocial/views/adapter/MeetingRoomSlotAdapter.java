@@ -100,14 +100,14 @@ public class MeetingRoomSlotAdapter extends RecyclerView.Adapter<MeetingRoomSlot
             }
         }
 
-        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+//        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
 // generate random color
-        int color1 = generator.getRandomColor();
+//        int color1 = generator.getRandomColor();
 // generate color based on a key (same key returns the same color), useful for list/grid views
 //        int color2 = generator.getColor(item.getContactPersonEmailId());
-        TextDrawable drawable = TextDrawable.builder()
-                .buildRound(String.valueOf(position + 1), color1);
-        holder.logo.setImageDrawable(drawable);
+//        TextDrawable drawable = TextDrawable.builder()
+//                .buildRound(String.valueOf(position + 1), color1);
+//        holder.logo.setImageDrawable(drawable);
         holder.selector.setTag(item);
     }
 

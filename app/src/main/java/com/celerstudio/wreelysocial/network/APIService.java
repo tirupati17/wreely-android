@@ -74,6 +74,10 @@ public interface APIService {
 
     @GET(BuildConfig.PATH + "/events/unattend/event_id={eventId}&member_id={memberId}")
     Observable<Response<BasicResponse>> withdrawEvent(@Path("eventId") int eventId, @Path("memberId") int memberId, @Query("access_token") String accessToken);
+
+    @GET(BuildConfig.PATH + "/{vendorId}/meetingroom/dashboard")
+    Observable<Response<BasicResponse>> meetingRoomDashboard(@Path("vendorId") String vendorId, @Query("access_token") String accessToken);
+
 //
 //    @GET(BuildConfig.PATH + "/case/list")
 //    Observable<Response<BasicResponse>> getCases(@Query("access_token") String accessToken);

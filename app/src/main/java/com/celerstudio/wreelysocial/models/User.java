@@ -38,7 +38,7 @@ public class User implements Parcelable {
     private String accessToken;
     private String companyKey;
     private String occupation;
-    private List<Vendor> vendors;
+//    private List<Vendor> vendors;
 
     public String getAboutMe() {
         return aboutMe;
@@ -112,13 +112,13 @@ public class User implements Parcelable {
         this.membershipTypeId = membershipTypeId;
     }
 
-    public List<Vendor> getVendors() {
-        return vendors;
-    }
-
-    public void setVendors(List<Vendor> vendors) {
-        this.vendors = vendors;
-    }
+//    public List<Vendor> getVendors() {
+//        return vendors;
+//    }
+//
+//    public void setVendors(List<Vendor> vendors) {
+//        this.vendors = vendors;
+//    }
 
     public User() {
     }
@@ -203,7 +203,7 @@ public class User implements Parcelable {
         dest.writeString(this.accessToken);
         dest.writeString(this.companyKey);
         dest.writeString(this.occupation);
-        dest.writeTypedList(this.vendors);
+//        dest.writeTypedList(this.vendors);
     }
 
     protected User(Parcel in) {
@@ -223,7 +223,7 @@ public class User implements Parcelable {
         this.accessToken = in.readString();
         this.companyKey = in.readString();
         this.occupation = in.readString();
-        this.vendors = in.createTypedArrayList(Vendor.CREATOR);
+//        this.vendors = in.createTypedArrayList(Vendor.CREATOR);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {

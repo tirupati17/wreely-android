@@ -34,6 +34,7 @@
                     android:layout_height="60dp"
                     android:background="@color/white"
                     android:hint="Search event name"
+                    android:maxLines="1"
                     android:padding="16dp" />
             </LinearLayout>
 

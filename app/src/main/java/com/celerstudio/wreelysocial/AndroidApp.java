@@ -1,6 +1,7 @@
 package com.celerstudio.wreelysocial;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;

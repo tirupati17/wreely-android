@@ -5,10 +5,10 @@
     android:background="@color/bg"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/no_navigation_toolbar"
-        android:visibility="gone" />
+    <!--<include-->
+        <!--android:id="@+id/toolbar"-->
+        <!--layout="@layout/no_navigation_toolbar"-->
+        <!--android:visibility="gone" />-->
 
 
     <LinearLayout

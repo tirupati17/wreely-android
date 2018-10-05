@@ -23,6 +23,8 @@ public class BasicResponse {
     private List<Event> events;
     @SerializedName("member_id")
     private Long memberId;
+    @SerializedName("meeting_room_dashboard")
+    private MeetingRoomDashboard meetingRoomDashboard;
 
     public BasicResponse() {
     }
@@ -122,5 +124,13 @@ public class BasicResponse {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public MeetingRoomDashboard getMeetingRoomDashboard() {
+        return meetingRoomDashboard;
+    }
+
+    public void setMeetingRoomDashboard(MeetingRoomDashboard meetingRoomDashboard) {
+        this.meetingRoomDashboard = meetingRoomDashboard;
     }
 }

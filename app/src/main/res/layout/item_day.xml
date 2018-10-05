@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="16dp"
             android:orientation="horizontal">
 
@@ -24,7 +24,7 @@
                 android:id="@+id/day_of_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="27"
+                android:text="25"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:tint="@color/black" />
@@ -44,10 +44,10 @@
             android:id="@+id/month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:text="June"
             android:textColor="@color/grey10"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <View
             android:id="@+id/underline"

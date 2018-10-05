@@ -3,9 +3,11 @@ package com.celerstudio.wreelysocial.views.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,6 +18,7 @@ import com.celerstudio.wreelysocial.R;
 import com.celerstudio.wreelysocial.VerticalSpaceItemDecoration;
 import com.celerstudio.wreelysocial.models.BasicResponse;
 import com.celerstudio.wreelysocial.models.MeetingRoom;
+import com.celerstudio.wreelysocial.models.MeetingRoomDashboard;
 import com.celerstudio.wreelysocial.models.Member;
 import com.celerstudio.wreelysocial.models.RestError;
 import com.celerstudio.wreelysocial.models.Vendor;
@@ -51,6 +54,24 @@ public class VendorMeetingRoomsActivity extends BaseActivity implements BaseActi
     Toolbar toolbar;
     private CompositeSubscription compositeSubscription;
     private MeetingRoomAdapter itemsAdapter;
+
+    @BindView(R.id.date)
+    TextView date;
+
+    @BindView(R.id.paid_booking)
+    TextView paidBooking;
+
+    @BindView(R.id.free_remaining)
+    TextView freeRemaining;
+
+    @BindView(R.id.out_of)
+    TextView outOf;
+
+    @BindView(R.id.total_booking)
+    TextView totalBooking;
+
+    @BindView(R.id.dashboard)
+    CardView dashboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +133,27 @@ public class VendorMeetingRoomsActivity extends BaseActivity implements BaseActi
             protected void onFailure(String message) {
                 internet.setVisibility(View.VISIBLE);
                 internet.setText(message);
+            }
+        }));
+        fetchMeetingRoomDashboard();
+    }
+
+    private void fetchMeetingRoomDashboard() {
+        compositeSubscription.add(getAPIService().meetingRoomDashboard(vendor.getId().toString(), getApp().getUser().getAccessToken()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>() {
+            @Override
+            protected void onSuccess(Response<BasicResponse> response) {
+                MeetingRoomDashboard meetingRoomDashboard = response.body().getMeetingRoomDashboard();
+                date.setText(meetingRoomDashboard.getMonth());
+                freeRemaining.setText(meetingRoomDashboard.getFreeRemaining());
+                paidBooking.setText(meetingRoomDashboard.getPaidUsage());
+                outOf.setText("Out of " + meetingRoomDashboard.getFreeCredit());
+                totalBooking.setText(meetingRoomDashboard.getTotalUsage());
+                dashboard.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected void onFailure(String message) {
+                Log.d("onFailure", message);
             }
         }));
     }

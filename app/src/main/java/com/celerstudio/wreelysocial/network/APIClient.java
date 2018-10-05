@@ -40,7 +40,7 @@ public class APIClient {
         if (apiService == null) {
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
             httpClient.interceptors().add(interceptor());
-            if (BuildConfig.DEBUG)
+//            if (BuildConfig.DEBUG)
                 httpClient.interceptors().add(httpLoggingInterceptor);
             Retrofit.Builder builder =
                     new Retrofit.Builder()

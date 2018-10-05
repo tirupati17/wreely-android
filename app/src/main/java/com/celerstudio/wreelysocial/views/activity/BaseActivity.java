@@ -106,6 +106,11 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
+//        try {
+//            MultiDex.install(this);
+//        } catch (RuntimeException multiDexException) {
+//            multiDexException.printStackTrace();
+//        }
     }
 
     public void showDialog(String title, String body) {

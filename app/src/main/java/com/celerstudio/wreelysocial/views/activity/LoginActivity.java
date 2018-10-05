@@ -51,8 +51,8 @@ import rx.subscriptions.CompositeSubscription;
 
 public class LoginActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
 
     @BindView(R.id.submit)
     Button submit;
@@ -95,7 +95,7 @@ public class LoginActivity extends BaseActivity {
             etMobile.setText("9967247265");
         }
 
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
 
         smsReceiver = new SMSReceiver();
         smsReceiver.setListener(new SMSReceiver.SMSListener() {
