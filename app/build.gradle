@@ -20,8 +20,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         multiDexEnabled true
-        versionCode 7
-        versionName "1.5"
+        versionCode 9
+        versionName "1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "DATA_BASE_NAME", "\"wreelysocial.db\"")
         buildConfigField "int", "DB_VERSION", "1"
@@ -45,6 +45,12 @@ android {
             storePassword "wreelysocial@1two3"
             storeFile file("../extras/wreelysocial")
         }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
     buildTypes {
         localhost {

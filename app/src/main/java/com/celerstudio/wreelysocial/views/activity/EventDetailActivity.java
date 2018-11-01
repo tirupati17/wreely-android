@@ -1,5 +1,6 @@
 package com.celerstudio.wreelysocial.views.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -7,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +32,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
 public class EventDetailActivity extends BaseActivity {
 
@@ -89,7 +93,13 @@ public class EventDetailActivity extends BaseActivity {
                     .buildRound("N", color1);
         }
         logo.setImageDrawable(drawable);
-        description.setText(Util.textIsEmpty(event.getDescription()) ? "Website - N/A" : event.getDescription());
+
+        String desc = Util.textIsEmpty(event.getDescription()) ? "Website - N/A" : event.getDescription();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            description.setText(Html.fromHtml(desc, FROM_HTML_MODE_LEGACY));
+        } else {
+            description.setText(Html.fromHtml(desc));
+        }
 
         appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override

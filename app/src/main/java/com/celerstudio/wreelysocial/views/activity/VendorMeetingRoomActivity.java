@@ -25,6 +25,7 @@ import com.celerstudio.wreelysocial.VerticalSpaceItemDecoration;
 import com.celerstudio.wreelysocial.models.BasicResponse;
 import com.celerstudio.wreelysocial.models.Day;
 import com.celerstudio.wreelysocial.models.MeetingRoom;
+import com.celerstudio.wreelysocial.models.MeetingRoomDashboard;
 import com.celerstudio.wreelysocial.models.MeetingRoomSlot;
 import com.celerstudio.wreelysocial.models.RestError;
 import com.celerstudio.wreelysocial.models.Vendor;
@@ -58,6 +59,7 @@ public class VendorMeetingRoomActivity extends BaseActivity {
 
     public static final String VENDOR = "vendor";
     public static final String MEETING_ROOM = "meeting_room";
+    public static final String MEETING_ROOM_DASHBOARD = "meeting_room_dashboard";
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -115,7 +117,6 @@ public class VendorMeetingRoomActivity extends BaseActivity {
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
             decorView.setSystemUiVisibility(uiOptions);
         }
-
 
         vendor = getIntent().getParcelableExtra(VENDOR);
         meetingRoom = getIntent().getParcelableExtra(MEETING_ROOM);
@@ -352,11 +353,18 @@ public class VendorMeetingRoomActivity extends BaseActivity {
 //    }
 
     public void confirmBooking(MeetingRoomSlot meetingRoomSlot, int pos) {
+
+        String message = "Are you sure you want to book this slot?";
+
+        if (meetingRoomSlot.isFreeCreditUsed()) {
+            message = "You have used all your available free hours. Now you will be charged for this slot booking. Please confirm to book this slot";
+        }
+
         CustomPopoverView customPopoverView = CustomPopoverView.builder(this)
                 .withNegativeTitle("Cancel")
                 .withPositiveTitle("Confirm")
                 .withTitle("Confirm booking")
-                .withMessage("Are you sure you want to book this slot?")
+                .withMessage(message)
                 .setDialogButtonClickListener(new CustomPopoverView.DialogButtonClickListener() {
                     @Override
                     public void positiveButtonClicked(View view, AlertDialog alertDialog) {

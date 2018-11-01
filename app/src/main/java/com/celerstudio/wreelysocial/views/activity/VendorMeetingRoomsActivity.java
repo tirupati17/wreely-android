@@ -73,6 +73,8 @@ public class VendorMeetingRoomsActivity extends BaseActivity implements BaseActi
     @BindView(R.id.dashboard)
     CardView dashboard;
 
+    private MeetingRoomDashboard meetingRoomDashboard;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +98,7 @@ public class VendorMeetingRoomsActivity extends BaseActivity implements BaseActi
                 if (!Util.textIsEmpty(member.getName())) {
                     Intent intent = new Intent(VendorMeetingRoomsActivity.this, VendorMeetingRoomActivity.class);
                     intent.putExtra(VendorMeetingRoomActivity.MEETING_ROOM, member);
+                    intent.putExtra(VendorMeetingRoomActivity.MEETING_ROOM_DASHBOARD, meetingRoomDashboard);
                     intent.putExtra(VendorMeetingRoomActivity.VENDOR, vendor);
                     startActivity(intent);
                 }
@@ -142,7 +145,7 @@ public class VendorMeetingRoomsActivity extends BaseActivity implements BaseActi
         compositeSubscription.add(getAPIService().meetingRoomDashboard(vendor.getId().toString(), getApp().getUser().getAccessToken()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CallbackWrapper<Response<BasicResponse>>() {
             @Override
             protected void onSuccess(Response<BasicResponse> response) {
-                MeetingRoomDashboard meetingRoomDashboard = response.body().getMeetingRoomDashboard();
+                meetingRoomDashboard = response.body().getMeetingRoomDashboard();
                 date.setText(meetingRoomDashboard.getMonth());
                 freeRemaining.setText(meetingRoomDashboard.getFreeRemaining());
                 paidBooking.setText(meetingRoomDashboard.getPaidUsage());

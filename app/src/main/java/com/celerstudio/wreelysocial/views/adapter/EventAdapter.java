@@ -1,7 +1,9 @@
 package com.celerstudio.wreelysocial.views.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,8 @@ import com.celerstudio.wreelysocial.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.DataObjectHolder> {
     private static String LOG_TAG = "CommonItemAdapter";
@@ -73,7 +77,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.DataObjectHo
         holder.setIsRecyclable(false);
         Event item = mDataset.get(position);
         holder.title.setText(item.getTitle());
-        holder.description.setText(item.getDescription());
+
+        String desc = Util.textIsEmpty(item.getDescription()) ? "Website - N/A" : item.getDescription();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            holder.description.setText(Html.fromHtml(desc, FROM_HTML_MODE_LEGACY));
+        } else {
+            holder.description.setText(Html.fromHtml(desc));
+        }
+
         String time = Util.getEventTimeDuration(item.getStartTime(), item.getEndTime());
 
         if (!Util.textIsEmpty(time)) {

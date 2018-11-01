@@ -41,8 +41,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Meeting room usage"
-                        android:textStyle="bold"
-                        android:textColor="@color/textPrimary" />
+                        android:textColor="@color/textPrimary"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/date"
@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="4dp"
-                    android:background="@color/grey0"/>
+                    android:background="@color/grey0" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Paid Booking"
+                        android:text="Paid"
                         android:textColor="@color/textSecondary" />
 
                     <TextView
@@ -97,7 +97,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Free remaining"
+                        android:text="Free"
                         android:textColor="@color/textSecondary" />
 
                     <LinearLayout
@@ -136,8 +136,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Total Booking"
-                        android:textColor="@color/textSecondary" />
+                        android:text="Total"
+                        android:textColor="@color/textSecondary"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/total_booking"

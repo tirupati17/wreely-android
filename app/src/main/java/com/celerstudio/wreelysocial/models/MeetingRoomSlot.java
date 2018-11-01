@@ -24,6 +24,8 @@ public class MeetingRoomSlot implements Parcelable {
     private Long roomId;
     @SerializedName("meeting_room_name")
     private String name;
+    @SerializedName("is_free_credit_used")
+    private int freeCreditUsed;
     private boolean expired;
 
 
@@ -103,6 +105,14 @@ public class MeetingRoomSlot implements Parcelable {
         this.roomId = roomId;
     }
 
+    public boolean isFreeCreditUsed() {
+        return freeCreditUsed == 1;
+    }
+
+    public void setIsFreeCreditUsed(int isFreeCreditUsed) {
+        this.freeCreditUsed = isFreeCreditUsed;
+    }
+
     public boolean isExpired() {
         return expired;
     }
@@ -130,6 +140,7 @@ public class MeetingRoomSlot implements Parcelable {
         dest.writeValue(this.memberId);
         dest.writeValue(this.roomId);
         dest.writeString(this.name);
+        dest.writeInt(this.freeCreditUsed);
         dest.writeByte(this.expired ? (byte) 1 : (byte) 0);
     }
 
@@ -143,6 +154,7 @@ public class MeetingRoomSlot implements Parcelable {
         this.memberId = (Long) in.readValue(Long.class.getClassLoader());
         this.roomId = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
+        this.freeCreditUsed = in.readInt();
         this.expired = in.readByte() != 0;
     }
 

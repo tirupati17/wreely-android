@@ -297,7 +297,8 @@
                     android:paddingLeft="16dp"
                     android:text="Nearby Workspaces"
                     android:textColor="@color/textPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/my_workspaces"

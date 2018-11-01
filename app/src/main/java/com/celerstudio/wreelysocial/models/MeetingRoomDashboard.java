@@ -1,8 +1,11 @@
 package com.celerstudio.wreelysocial.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class MeetingRoomDashboard {
+public class MeetingRoomDashboard implements Parcelable {
     @SerializedName("booking_slot")
     private int bookingSlot;
     @SerializedName("total_booking_count")
@@ -76,4 +79,43 @@ public class MeetingRoomDashboard {
     public void setPaidUsage(String paidUsage) {
         this.paidUsage = paidUsage;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.bookingSlot);
+        dest.writeInt(this.totalBookingCount);
+        dest.writeString(this.month);
+        dest.writeString(this.totalUsage);
+        dest.writeString(this.freeRemaining);
+        dest.writeString(this.freeCredit);
+        dest.writeString(this.paidUsage);
+    }
+
+    protected MeetingRoomDashboard(Parcel in) {
+        this.bookingSlot = in.readInt();
+        this.totalBookingCount = in.readInt();
+        this.month = in.readString();
+        this.totalUsage = in.readString();
+        this.freeRemaining = in.readString();
+        this.freeCredit = in.readString();
+        this.paidUsage = in.readString();
+    }
+
+    public static final Parcelable.Creator<MeetingRoomDashboard> CREATOR = new Parcelable.Creator<MeetingRoomDashboard>() {
+        @Override
+        public MeetingRoomDashboard createFromParcel(Parcel source) {
+            return new MeetingRoomDashboard(source);
+        }
+
+        @Override
+        public MeetingRoomDashboard[] newArray(int size) {
+            return new MeetingRoomDashboard[size];
+        }
+    };
 }
