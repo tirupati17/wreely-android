@@ -90,6 +90,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="action_history">History</string>
     <string name="network_not_available">Please check internet connection.\n\nSettings.</string>
     <string name="something_went_wrong">Something went wrong!\n\nTry Again.</string>
     <string name="library_e_book_ppt_abstracts"><b>Library:</b>E-Book, PPt, Abstracts</string>
@@ -121,4 +122,6 @@ available, branch PA valve implantation remains an option for select patients.</
     <string name="Rs">\u20B9</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="sdkVersionKey">971b9704-d0c3-45f6-ab4f-1abe79cdcae5</string>
+    <string name="user_experior_version_key">971b9704-d0c3-45f6-ab4f-1abe79cdcae5</string>
 </resources>

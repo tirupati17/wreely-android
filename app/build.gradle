@@ -20,8 +20,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         multiDexEnabled true
-        versionCode 9
-        versionName "1.7"
+        versionCode 10
+        versionName "1.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "DATA_BASE_NAME", "\"wreelysocial.db\"")
         buildConfigField "int", "DB_VERSION", "1"
@@ -207,6 +207,7 @@ dependencies {
 
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation "com.google.android.gms:play-services-location:15.0.1"
+//    implementation (name: 'userexperiorsdk-V2-2-12032018-1846', ext: 'aar')
 }
 
 apply plugin: 'com.google.gms.google-services'

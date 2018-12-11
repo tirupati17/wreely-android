@@ -123,7 +123,7 @@ public class EventInfoFragment extends BaseFragment {
 
         if (event.getAttending()) {
             attend.setBackground(UiUtils.selectorBackground(getActivity().getResources().getColor(R.color.light_blue), getActivity().getResources().getColor(R.color.colorAccent)));
-            attending.setText("Yes I'm");
+            attending.setText("Yes");
             attend.setText("Cancel");
         } else {
             attend.setBackground(UiUtils.selectorBackground(getActivity().getResources().getColor(R.color.colorPrimary), getActivity().getResources().getColor(R.color.colorPrimaryDark)));
