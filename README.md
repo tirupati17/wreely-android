@@ -11,6 +11,12 @@ This repository is an open-source Android application for Wreely - Social, a soc
 - Profile Customization
 - [More Features...]
 
+## Screenshots
+
+<img src="https://github.com/tirupati17/wreely-android/blob/b734188b406b2437f0dc7d534ef020651eb1fb35/screenshot/1.jpg?raw=true"  width=20% height=50%> <img src="https://github.com/tirupati17/wreely-android/blob/b734188b406b2437f0dc7d534ef020651eb1fb35/screenshot/2.jpg?raw=true"  width=20% height=50%>
+<img src="https://github.com/tirupati17/wreely-android/blob/b734188b406b2437f0dc7d534ef020651eb1fb35/screenshot/3.jpg?raw=true"  width=20% height=50%>
+<img src="https://github.com/tirupati17/wreely-android/blob/b734188b406b2437f0dc7d534ef020651eb1fb35/screenshot/4.jpg?raw=true"  width=20% height=50%>
+
 ## Getting Started
 
 To explore and run this project, follow these steps:
