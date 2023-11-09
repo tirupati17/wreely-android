@@ -1,6 +1,6 @@
 # Wreely - Social Android App
 
-This repository is an open-source Android application for Wreely - Social, a social networking platform. It's designed to provide a seamless social networking experience tailored for Android devices.
+Wreely - Social is a community platform android app linked with the [Wreely - Workspace Management Platform](http://wreely.com). This app aims to engage workspace co-workers, allowing interactions and access to various workspace-related activities and information.
 
 ## Features
 
