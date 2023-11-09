@@ -1,6 +1,6 @@
 # Wreely - Social Android App
 
-This repository hosts the Android application for Wreely - Social, a social networking platform. The app is designed with a focus on user experience and performance.
+This repository is an open-source Android application for Wreely - Social, a social networking platform. It's designed to provide a seamless social networking experience tailored for Android devices.
 
 ## Features
 
@@ -11,9 +11,13 @@ This repository hosts the Android application for Wreely - Social, a social netw
 - Profile Customization
 - [More Features...]
 
+## Disclaimer
+
+Please note that this codebase is not actively maintained. The code is old and might not run as expected due to changes in dependencies and the Android platform. It is being open-sourced as-is for educational purposes, and any updates to make it functional on current Android versions are welcome.
+
 ## Getting Started
 
-To get a local copy up and running follow these simple steps.
+To explore and run this project, follow these steps:
 
 ### Prerequisites
 
@@ -22,20 +26,20 @@ To get a local copy up and running follow these simple steps.
 
 ### Installation
 
-1. Clone the repo
+1. Clone the repository:
    ```sh
    git clone https://github.com/tirupati17/wreely-android.git
    ```
 2. Open the project in Android Studio.
-3. Build the project and run on an emulator or a real device.
+3. Build the project and run it on an emulator or a real device.
 
 ## Usage
 
-Use this space to show useful examples of how the app can be used. Screenshots, code blocks, and demos can be useful in this section.
+This section can include examples of how the app can be used, along with screenshots and code snippets.
 
 ## Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+As an open-source project, contributions are encouraged and appreciated. Whether it's feature development, bug fixes, or improvements in documentation, your help is welcome.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -45,10 +49,8 @@ Contributions are what make the open-source community such an amazing place to l
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is open-sourced under the MIT License. See the `LICENSE` file for more information.
 
 ## Contact
-
-Tirupati Balan - [@tirupati17](https://twitter.com/tirupati17) - tirupati@tirupatibalan.com
 
 Project Link: [https://github.com/tirupati17/wreely-android](https://github.com/tirupati17/wreely-android)
